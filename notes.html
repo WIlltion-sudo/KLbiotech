@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes Browser | BioNotes</title>
+  <meta name="description" content="Browse all B.Tech Biotechnology notes organized by subject and course outcome." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/cards.css" />
+  <link rel="stylesheet" href="assets/css/sidebar.css" />
+</head>
+<body class="notes-page">
+
+  <!-- ─── NAV ─── -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">BioNotes</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="notes.html" class="nav-link active">Notes</a></li>
+        <li><a href="search.html" class="nav-link">Search</a></li>
+      </ul>
+      <button class="nav-cta" onclick="window.location='search.html'">Search</button>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-menu" id="navMobileMenu">
+      <a href="index.html" class="mobile-link">Home</a>
+      <a href="notes.html" class="mobile-link">Notes</a>
+      <a href="search.html" class="mobile-link">Search</a>
+    </div>
+  </nav>
+
+  <!-- ─── NOTES LAYOUT ─── -->
+  <div class="notes-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          <span class="logo-icon">⬡</span> Subjects
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Close sidebar">✕</button>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebarNav">
+        <!-- Populated by JS -->
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-stat">
+          <span id="sbTotalNotes">18</span> notes · <span id="sbTotalSubjects">4</span> subjects
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="notes-main" id="notesMain">
+
+      <!-- BREADCRUMB -->
+      <div class="breadcrumb" id="breadcrumb">
+        <a href="index.html" class="bc-link">Home</a>
+        <span class="bc-sep">›</span>
+        <span class="bc-current" id="bcCurrent">All Notes</span>
+      </div>
+
+      <!-- PAGE HEADER -->
+      <div class="notes-page-header">
+        <div class="notes-page-tag" id="notesPageTag">SEMESTER 1</div>
+        <h1 class="notes-page-title" id="notesPageTitle">
+          All <span class="gradient-text">Notes</span>
+        </h1>
+        <p class="notes-page-sub" id="notesPageSub">
+          18 notes across 4 subjects — auto-organized by subject &amp; course outcome
+        </p>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all" onclick="filterNotes('all', this)">All</button>
+        <button class="filter-btn" data-filter="BCT" onclick="filterNotes('BCT', this)">BCT</button>
+        <button class="filter-btn" data-filter="Chem" onclick="filterNotes('Chem', this)">Chem</button>
+        <button class="filter-btn" data-filter="LACE" onclick="filterNotes('LACE', this)">LACE</button>
+        <button class="filter-btn" data-filter="DS" onclick="filterNotes('DS', this)">DS</button>
+      </div>
+
+      <!-- SUBJECTS LISTING -->
+      <div class="subjects-listing" id="subjectsListing">
+        <!-- Populated by JS -->
+      </div>
+
+    </main>
+  </div>
+
+  <!-- MOBILE SIDEBAR TRIGGER -->
+  <button class="sidebar-open-btn" id="sidebarOpenBtn" aria-label="Open sidebar">☰ Subjects</button>
+
+  <!-- PDF MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Note Title</h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-meta" id="modalMeta"></div>
+        <div class="modal-actions">
+          <a class="btn-primary" id="modalViewBtn" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Open PDF
+          </a>
+          <a class="btn-ghost" id="modalDownloadBtn" download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/notes-data.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

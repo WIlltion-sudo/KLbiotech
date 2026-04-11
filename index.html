@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BioNotes | Ultra-HD B.Tech Biotechnology Notes Platform</title>
+  <meta name="description" content="Next-generation B.Tech Biotechnology learning platform with immersive 3D UI, automated note organization, and futuristic design." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/hero.css" />
+  <link rel="stylesheet" href="assets/css/cards.css" />
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">BioNotes</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="notes.html" class="nav-link">Notes</a></li>
+        <li><a href="search.html" class="nav-link">Search</a></li>
+      </ul>
+      <button class="nav-cta" onclick="window.location='notes.html'">Explore Notes</button>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-menu" id="navMobileMenu">
+      <a href="index.html" class="mobile-link">Home</a>
+      <a href="notes.html" class="mobile-link">Notes</a>
+      <a href="search.html" class="mobile-link">Search</a>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero" id="hero">
+    <canvas id="dnaCanvas" class="dna-canvas"></canvas>
+    <div class="hero-particles" id="heroParticles"></div>
+
+    <div class="hero-content" id="heroContent">
+      <div class="hero-badge">
+        <span class="badge-pulse"></span>
+        B.Tech Biotechnology · Semester 1
+      </div>
+      <h1 class="hero-title">
+        <span class="gradient-text">Next-Gen</span><br />
+        Biotechnology<br />
+        <span class="gradient-text-2">Learning Experience</span>
+      </h1>
+      <p class="hero-sub">
+        Explore curated notes, organized by subject &amp; course outcomes.<br />
+        Beautiful. Fast. Interactive.
+      </p>
+      <div class="hero-actions">
+        <a href="notes.html" class="btn-primary" id="exploreBtn">
+          <span class="btn-glow"></span>
+          Explore Notes
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="search.html" class="btn-ghost">Search Topics</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">4</span><span class="stat-label">Subjects</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">18</span><span class="stat-label">Notes</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">8</span><span class="stat-label">Course Outcomes</span></div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── SUBJECTS ─── -->
+  <section class="subjects-section" id="subjectsSection">
+    <div class="section-header">
+      <div class="section-tag">SUBJECTS</div>
+      <h2 class="section-title">Browse by <span class="gradient-text">Subject</span></h2>
+      <p class="section-sub">All notes automatically organized. Click any subject to explore.</p>
+    </div>
+
+    <div class="subjects-grid" id="subjectsGrid">
+      <!-- Populated by JS -->
+    </div>
+  </section>
+
+  <!-- ─── HOW IT WORKS ─── -->
+  <section class="how-section">
+    <div class="section-header">
+      <div class="section-tag">PLATFORM</div>
+      <h2 class="section-title">How It <span class="gradient-text">Works</span></h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card" data-step="01">
+        <div class="step-icon">🧬</div>
+        <h3>Auto-Organized</h3>
+        <p>Notes automatically sorted by subject prefix and course outcome number.</p>
+      </div>
+      <div class="step-card" data-step="02">
+        <div class="step-icon">🔍</div>
+        <h3>Instant Search</h3>
+        <p>Find any topic across all subjects in milliseconds with smart filtering.</p>
+      </div>
+      <div class="step-card" data-step="03">
+        <div class="step-icon">📄</div>
+        <h3>View & Download</h3>
+        <p>Open PDFs directly in browser or download for offline study sessions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-icon">⬡</span> BioNotes
+      </div>
+      <p class="footer-sub">B.Tech Biotechnology · Semester 1 Notes Platform</p>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="notes.html">Notes</a>
+        <a href="search.html">Search</a>
+      </div>
+      <p class="footer-copy">© 2026 BioNotes. Built for academic excellence.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/notes-data.js"></script>
+  <script src="assets/js/three-scene.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

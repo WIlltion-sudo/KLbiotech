@@ -1,0 +1,15 @@
+# Ignore OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor folders
+.vscode/
+.idea/
+
+# Node (if ever used locally)
+node_modules/
+npm-debug.log*
+
+# Local server cache
+.cache/

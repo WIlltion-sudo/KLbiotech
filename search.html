@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Notes | BioNotes</title>
+  <meta name="description" content="Search and filter B.Tech Biotechnology notes by subject, course outcome, or keyword." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/cards.css" />
+</head>
+<body class="search-page">
+
+  <!-- ─── NAV ─── -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">BioNotes</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="notes.html" class="nav-link">Notes</a></li>
+        <li><a href="search.html" class="nav-link active">Search</a></li>
+      </ul>
+      <button class="nav-cta" onclick="window.location='notes.html'">Browse Notes</button>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-menu" id="navMobileMenu">
+      <a href="index.html" class="mobile-link">Home</a>
+      <a href="notes.html" class="mobile-link">Notes</a>
+      <a href="search.html" class="mobile-link">Search</a>
+    </div>
+  </nav>
+
+  <!-- ─── SEARCH HERO ─── -->
+  <section class="search-hero">
+    <div class="search-hero-bg"></div>
+    <div class="search-hero-content">
+      <div class="section-tag">SEARCH</div>
+      <h1 class="search-title">Find Any <span class="gradient-text">Note</span></h1>
+      <p class="search-sub">Search across all subjects, course outcomes, and topics</p>
+
+      <div class="search-box-wrap">
+        <div class="search-box" id="searchBox">
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="e.g. Enzymes, CO-2, Data Structure..."
+            autocomplete="off"
+            autofocus
+          />
+          <button class="search-clear" id="searchClear" onclick="clearSearch()" aria-label="Clear search">✕</button>
+        </div>
+      </div>
+
+      <!-- FILTER CHIPS -->
+      <div class="search-filters" id="searchFilters">
+        <span class="filter-label">Filter by subject:</span>
+        <div class="filter-chips">
+          <button class="chip active" data-subject="all" onclick="setSubjectFilter('all', this)">All</button>
+          <button class="chip" data-subject="BCT" onclick="setSubjectFilter('BCT', this)">BCT</button>
+          <button class="chip" data-subject="Chem" onclick="setSubjectFilter('Chem', this)">Chem</button>
+          <button class="chip" data-subject="LACE" onclick="setSubjectFilter('LACE', this)">LACE</button>
+          <button class="chip" data-subject="DS" onclick="setSubjectFilter('DS', this)">DS</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── RESULTS ─── -->
+  <section class="search-results-section">
+    <div class="search-results-header">
+      <span class="results-count" id="resultsCount">Showing all 18 notes</span>
+      <div class="results-sort">
+        <select id="sortSelect" onchange="sortResults(this.value)" class="sort-select">
+          <option value="alpha">A → Z</option>
+          <option value="subject">By Subject</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="search-results-grid" id="searchResultsGrid">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="search-empty" id="searchEmpty" style="display:none">
+      <div class="empty-icon">🔬</div>
+      <h3>No notes found</h3>
+      <p>Try a different keyword or remove the subject filter.</p>
+      <button onclick="clearSearch()" class="btn-ghost" style="margin-top:1rem">Clear Search</button>
+    </div>
+  </section>
+
+  <!-- PDF MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Note Title</h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-meta" id="modalMeta"></div>
+        <div class="modal-actions">
+          <a class="btn-primary" id="modalViewBtn" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Open PDF
+          </a>
+          <a class="btn-ghost" id="modalDownloadBtn" download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/notes-data.js"></script>
+  <script src="assets/js/search.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
