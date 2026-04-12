@@ -1,20 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Notes Browser | BioNotes</title>
   <meta name="description" content="Browse all B.Tech Biotechnology notes organized by subject and course outcome." />
+  <meta name="theme-color" content="#00FFB2" />
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
   <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
   <link rel="stylesheet" href="assets/css/cards.css" />
-  <link rel="stylesheet" href="assets/css/sidebar.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    body.notes-page { padding-top: 0; }
+    .notes-page-header { margin-bottom: 2rem; }
+  </style>
 </head>
 <body class="notes-page">
 
-  <!-- ─── NAV ─── -->
+  <!-- SCROLL PROGRESS -->
+  <div id="scrollProgress"></div>
+  <!-- PAGE TRANSITION -->
+  <div id="pageTransition"></div>
+  <!-- CURSOR -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ── NAV ── -->
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <a href="index.html" class="nav-logo">
@@ -26,6 +49,7 @@
         <li><a href="notes.html" class="nav-link active">Notes</a></li>
         <li><a href="search.html" class="nav-link">Search</a></li>
       </ul>
+      <button class="theme-toggle" aria-label="Toggle theme"><span class="theme-icon">☀️</span></button>
       <button class="nav-cta" onclick="window.location='search.html'">Search</button>
       <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
@@ -38,7 +62,7 @@
     </div>
   </nav>
 
-  <!-- ─── NOTES LAYOUT ─── -->
+  <!-- ── NOTES LAYOUT ── -->
   <div class="notes-layout">
 
     <!-- SIDEBAR -->
@@ -49,11 +73,7 @@
         </div>
         <button class="sidebar-toggle" id="sidebarToggle" aria-label="Close sidebar">✕</button>
       </div>
-
-      <nav class="sidebar-nav" id="sidebarNav">
-        <!-- Populated by JS -->
-      </nav>
-
+      <nav class="sidebar-nav" id="sidebarNav"></nav>
       <div class="sidebar-footer">
         <div class="sidebar-stat">
           <span id="sbTotalNotes">18</span> notes · <span id="sbTotalSubjects">4</span> subjects
@@ -85,16 +105,14 @@
       <!-- FILTER BAR -->
       <div class="filter-bar">
         <button class="filter-btn active" data-filter="all" onclick="filterNotes('all', this)">All</button>
-        <button class="filter-btn" data-filter="BCT" onclick="filterNotes('BCT', this)">BCT</button>
-        <button class="filter-btn" data-filter="Chem" onclick="filterNotes('Chem', this)">Chem</button>
-        <button class="filter-btn" data-filter="LACE" onclick="filterNotes('LACE', this)">LACE</button>
-        <button class="filter-btn" data-filter="DS" onclick="filterNotes('DS', this)">DS</button>
+        <button class="filter-btn" data-filter="BCT"  onclick="filterNotes('BCT', this)">🧬 BCT</button>
+        <button class="filter-btn" data-filter="Chem" onclick="filterNotes('Chem', this)">⚗️ Chem</button>
+        <button class="filter-btn" data-filter="LACE" onclick="filterNotes('LACE', this)">📐 LACE</button>
+        <button class="filter-btn" data-filter="DS"   onclick="filterNotes('DS', this)">🌐 DS</button>
       </div>
 
       <!-- SUBJECTS LISTING -->
-      <div class="subjects-listing" id="subjectsListing">
-        <!-- Populated by JS -->
-      </div>
+      <div class="subjects-listing" id="subjectsListing"></div>
 
     </main>
   </div>
@@ -103,21 +121,23 @@
   <button class="sidebar-open-btn" id="sidebarOpenBtn" aria-label="Open sidebar">☰ Subjects</button>
 
   <!-- PDF MODAL -->
-  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+  <div class="modal-overlay" id="modalOverlay">
     <div class="modal-box" onclick="event.stopPropagation()">
       <div class="modal-header">
         <h2 class="modal-title" id="modalTitle">Note Title</h2>
-        <button class="modal-close" onclick="closeModal()">✕</button>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
       </div>
+      <!-- Inline PDF preview -->
+      <div id="modalPreview"></div>
       <div class="modal-body">
         <div class="modal-meta" id="modalMeta"></div>
         <div class="modal-actions">
           <a class="btn-primary" id="modalViewBtn" target="_blank" rel="noopener">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             Open PDF
           </a>
           <a class="btn-ghost" id="modalDownloadBtn" download>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download
           </a>
         </div>
@@ -126,6 +146,14 @@
   </div>
 
   <script src="assets/js/notes-data.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/gsap-animations.js"></script>
+  <script src="assets/js/cursor.js"></script>
   <script src="assets/js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+    }
+  </script>
 </body>
 </html>

@@ -1,20 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BioNotes | Ultra-HD B.Tech Biotechnology Notes Platform</title>
-  <meta name="description" content="Next-generation B.Tech Biotechnology learning platform with immersive 3D UI, automated note organization, and futuristic design." />
+  <title>BioNotes | Immersive B.Tech Biotechnology Learning Hub</title>
+  <meta name="description" content="Next-generation B.Tech Biotechnology notes platform. Semester-wise, subject-wise organized notes with 3D animations, smart search, and instant downloads." />
+  <meta name="theme-color" content="#00FFB2" />
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
   <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
   <link rel="stylesheet" href="assets/css/hero.css" />
   <link rel="stylesheet" href="assets/css/cards.css" />
+  <link rel="stylesheet" href="assets/css/homepage.css" />
+
+  <!-- CDN Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body>
 
-  <!-- ─── NAV ─── -->
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="preloader-logo">BIONOTES</div>
+    <div class="preloader-dna"><div class="preloader-dna-dot"></div></div>
+    <div class="preloader-text">Initializing sequences…</div>
+    <div class="preloader-bar-wrap"><div class="preloader-bar"></div></div>
+  </div>
+
+  <!-- SCROLL PROGRESS -->
+  <div id="scrollProgress"></div>
+  <!-- PAGE TRANSITION -->
+  <div id="pageTransition"></div>
+  <!-- CUSTOM CURSOR -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- AMBIENT ORBS -->
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+  <div class="ambient-orb ambient-orb-3"></div>
+
+  <!-- ════════ NAV (no admin link) ════════ -->
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <a href="index.html" class="nav-logo">
@@ -22,55 +56,67 @@
         <span class="logo-text">BioNotes</span>
       </a>
       <ul class="nav-links">
-        <li><a href="index.html" class="nav-link active">Home</a></li>
-        <li><a href="notes.html" class="nav-link">Notes</a></li>
+        <li><a href="index.html"  class="nav-link active">Home</a></li>
+        <li><a href="notes.html"  class="nav-link">Notes</a></li>
         <li><a href="search.html" class="nav-link">Search</a></li>
       </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span class="theme-icon">☀️</span>
+      </button>
       <button class="nav-cta" onclick="window.location='notes.html'">Explore Notes</button>
       <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
     </div>
     <div class="nav-mobile-menu" id="navMobileMenu">
-      <a href="index.html" class="mobile-link">Home</a>
-      <a href="notes.html" class="mobile-link">Notes</a>
+      <a href="index.html"  class="mobile-link">Home</a>
+      <a href="notes.html"  class="mobile-link">Notes</a>
       <a href="search.html" class="mobile-link">Search</a>
     </div>
   </nav>
 
-  <!-- ─── HERO ─── -->
+  <!-- ════════════════════════════════════════
+       SECTION 1 — HERO
+  ════════════════════════════════════════ -->
   <section class="hero" id="hero">
     <canvas id="dnaCanvas" class="dna-canvas"></canvas>
     <div class="hero-particles" id="heroParticles"></div>
+    <div class="parallax-grid"></div>
 
     <div class="hero-content" id="heroContent">
       <div class="hero-badge">
         <span class="badge-pulse"></span>
-        B.Tech Biotechnology · Semester 1
+        B.Tech Biotechnology &nbsp;·&nbsp; Academic Learning Hub
       </div>
+
       <h1 class="hero-title">
-        <span class="gradient-text">Next-Gen</span><br />
-        Biotechnology<br />
-        <span class="gradient-text-2">Learning Experience</span>
+        <span class="word"><span class="word-inner gradient-text">Immersive</span></span><br />
+        <span class="word"><span class="word-inner">Biotech Notes</span></span><br />
+        <span class="word"><span class="word-inner gradient-text-2">Learning Hub</span></span>
       </h1>
+
       <p class="hero-sub">
-        Explore curated notes, organized by subject &amp; course outcomes.<br />
-        Beautiful. Fast. Interactive.
+        Semester-wise, subject-wise, course-outcome-organized notes.<br />
+        Beautiful interface. Instant access. Zero barriers.
       </p>
+
       <div class="hero-actions">
         <a href="notes.html" class="btn-primary" id="exploreBtn">
           <span class="btn-glow"></span>
-          Explore Notes
+          Browse All Notes
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <a href="search.html" class="btn-ghost">Search Topics</a>
+        <a href="search.html" class="btn-ghost">🔍 Search Topics</a>
       </div>
+
       <div class="hero-stats">
-        <div class="stat"><span class="stat-num">4</span><span class="stat-label">Subjects</span></div>
+        <div class="stat"><span class="stat-num" id="heroStatSubjects">4</span><span class="stat-label">Subjects</span></div>
         <div class="stat-divider"></div>
-        <div class="stat"><span class="stat-num">18</span><span class="stat-label">Notes</span></div>
+        <div class="stat"><span class="stat-num" id="heroStatNotes">18</span><span class="stat-label">Notes</span></div>
         <div class="stat-divider"></div>
-        <div class="stat"><span class="stat-num">8</span><span class="stat-label">Course Outcomes</span></div>
+        <div class="stat"><span class="stat-num" id="heroStatCO">8</span><span class="stat-label">Course Outcomes</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" id="heroStatFree">100</span><span class="stat-label">% Free</span></div>
       </div>
     </div>
 
@@ -80,62 +126,547 @@
     </div>
   </section>
 
-  <!-- ─── SUBJECTS ─── -->
+  <!-- ════════════════════════════════════════
+       SECTION 2 — STATS TICKER STRIP
+  ════════════════════════════════════════ -->
+  <div class="stats-ticker" aria-hidden="true">
+    <div class="ticker-wrap">
+      <div class="ticker-track" id="tickerTrack">
+        <!-- Items duplicated in JS for infinite loop -->
+        <span class="ticker-item">🧬 Biochemical Thermodynamics</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">⚗️ Engineering Chemistry</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">📐 Linear Algebra &amp; Calculus</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">🌐 Data Structures</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">⬇️ 100% Free Downloads</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">🔖 Bookmark Your Favourites</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">🔍 Fuzzy Search Across All Notes</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">🧬 Biochemical Thermodynamics</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">⚗️ Engineering Chemistry</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">📐 Linear Algebra &amp; Calculus</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">🌐 Data Structures</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">⬇️ 100% Free Downloads</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">🔖 Bookmark Your Favourites</span>
+        <span class="ticker-sep"></span>
+        <span class="ticker-item">🔍 Fuzzy Search Across All Notes</span>
+        <span class="ticker-sep"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       SECTION 3 — FEATURE HIGHLIGHTS
+  ════════════════════════════════════════ -->
+  <section class="features-section" id="featuresSection">
+    <div class="section-header gsap-reveal" style="max-width:1360px;margin:0 auto 3rem;padding:0 2rem">
+      <div class="section-tag">PLATFORM</div>
+      <h2 class="section-title">Built for <span class="gradient-text">Students</span></h2>
+      <p class="section-sub">Every feature designed to accelerate your learning.</p>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card gsap-reveal" style="--fc-rgb:0,255,178">
+        <div class="feature-num">01</div>
+        <span class="feature-icon">🧬</span>
+        <h3 class="feature-title">Structured Notes</h3>
+        <p class="feature-desc">Semester-wise and subject-wise organized notes mapped to specific Course Outcomes. No more hunting through files.</p>
+        <div class="feature-accent">01</div>
+      </div>
+
+      <div class="feature-card gsap-reveal" style="--fc-rgb:0,217,255">
+        <div class="feature-num">02</div>
+        <span class="feature-icon">🔍</span>
+        <h3 class="feature-title">Smart Fuzzy Search</h3>
+        <p class="feature-desc">Find any topic across all subjects instantly. Tolerant matching for typos, abbreviations, and partial words.</p>
+        <div class="feature-accent">02</div>
+      </div>
+
+      <div class="feature-card gsap-reveal" style="--fc-rgb:123,97,255">
+        <div class="feature-num">03</div>
+        <span class="feature-icon">⚡</span>
+        <h3 class="feature-title">Instant Download</h3>
+        <p class="feature-desc">Download any note as PDF with one click. Bookmark your favorites for quick revisit. All stored locally.</p>
+        <div class="feature-accent">03</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 4 — SUBJECTS CAROUSEL
+  ════════════════════════════════════════ -->
   <section class="subjects-section" id="subjectsSection">
-    <div class="section-header">
-      <div class="section-tag">SUBJECTS</div>
-      <h2 class="section-title">Browse by <span class="gradient-text">Subject</span></h2>
-      <p class="section-sub">All notes automatically organized. Click any subject to explore.</p>
+    <div class="subjects-section-inner">
+      <div class="section-header gsap-reveal">
+        <div class="section-tag">SUBJECTS</div>
+        <h2 class="section-title">Browse by <span class="gradient-text">Subject</span></h2>
+        <p class="section-sub">All 18 notes organized across 4 core subjects — click any to explore.</p>
+      </div>
+
+      <div class="carousel-wrapper gsap-reveal">
+        <div class="carousel-track-clip">
+          <div class="carousel-track" id="subjectsCarouselTrack">
+            <!-- Populated by JS app.js -->
+          </div>
+        </div>
+        <div class="carousel-controls">
+          <button class="carousel-btn" id="carouselPrev" aria-label="Previous">←</button>
+          <div class="carousel-dots" id="carouselDots"></div>
+          <button class="carousel-btn" id="carouselNext" aria-label="Next">→</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 5 — TRENDING NOTES
+  ════════════════════════════════════════ -->
+  <section class="trending-section" id="trendingSection">
+    <div class="trending-header-wrap">
+      <div class="section-header gsap-reveal" style="margin-bottom:0">
+        <div class="section-tag">HOT RIGHT NOW</div>
+        <h2 class="section-title">Trending <span class="gradient-text">Notes</span></h2>
+      </div>
+      <a href="notes.html" class="view-all-btn gsap-reveal">
+        View All Notes →
+      </a>
     </div>
 
-    <div class="subjects-grid" id="subjectsGrid">
+    <div class="trending-grid" id="trendingGrid">
       <!-- Populated by JS -->
     </div>
   </section>
 
-  <!-- ─── HOW IT WORKS ─── -->
+  <!-- ════════════════════════════════════════
+       SECTION 6 — HOW IT WORKS
+  ════════════════════════════════════════ -->
   <section class="how-section">
-    <div class="section-header">
-      <div class="section-tag">PLATFORM</div>
-      <h2 class="section-title">How It <span class="gradient-text">Works</span></h2>
+    <div class="section-header gsap-reveal">
+      <div class="section-tag">HOW IT WORKS</div>
+      <h2 class="section-title">Simple &amp; <span class="gradient-text">Powerful</span></h2>
+      <p class="section-sub">Get from landing to downloading in seconds.</p>
     </div>
     <div class="steps-grid">
       <div class="step-card" data-step="01">
-        <div class="step-icon">🧬</div>
-        <h3>Auto-Organized</h3>
-        <p>Notes automatically sorted by subject prefix and course outcome number.</p>
+        <div class="step-icon">🗂️</div>
+        <h3>Choose a Subject</h3>
+        <p>Browse BCT, Chemistry, LACE, or Data Structures from the organized subject grid.</p>
       </div>
       <div class="step-card" data-step="02">
         <div class="step-icon">🔍</div>
-        <h3>Instant Search</h3>
-        <p>Find any topic across all subjects in milliseconds with smart filtering.</p>
+        <h3>Search or Filter</h3>
+        <p>Use smart fuzzy search or filter by subject, type, and course outcome number.</p>
       </div>
       <div class="step-card" data-step="03">
-        <div class="step-icon">📄</div>
-        <h3>View & Download</h3>
-        <p>Open PDFs directly in browser or download for offline study sessions.</p>
+        <div class="step-icon">👁️</div>
+        <h3>Preview Inline</h3>
+        <p>Open PDFs right in the browser in our immersive modal viewer—no new tabs needed.</p>
+      </div>
+      <div class="step-card" data-step="04">
+        <div class="step-icon">⬇️</div>
+        <h3>Download &amp; Study</h3>
+        <p>One-click download for offline study. Bookmark for instant re-access anytime.</p>
       </div>
     </div>
   </section>
 
-  <!-- ─── FOOTER ─── -->
-  <footer class="footer">
+  <!-- ════════════════════════════════════════
+       SECTION 7 — BIG STATS SHOWCASE
+  ════════════════════════════════════════ -->
+  <section class="stats-showcase" id="statsShowcase">
+    <div class="stats-showcase-inner">
+      <div class="section-header gsap-reveal">
+        <div class="section-tag">BY THE NUMBERS</div>
+        <h2 class="section-title">Everything You <span class="gradient-text">Need</span></h2>
+      </div>
+      <div class="big-stats-grid">
+        <div class="big-stat gsap-reveal">
+          <div class="big-stat-glow"></div>
+          <div class="big-stat-num" data-target="18">0</div>
+          <div class="big-stat-label">Total Notes</div>
+          <div class="big-stat-sub">Across all subjects</div>
+        </div>
+        <div class="big-stat gsap-reveal">
+          <div class="big-stat-glow"></div>
+          <div class="big-stat-num" data-target="4">0</div>
+          <div class="big-stat-label">Core Subjects</div>
+          <div class="big-stat-sub">Semester 1 coverage</div>
+        </div>
+        <div class="big-stat gsap-reveal">
+          <div class="big-stat-glow"></div>
+          <div class="big-stat-num" data-target="8">0</div>
+          <div class="big-stat-label">Course Outcomes</div>
+          <div class="big-stat-sub">Mapped &amp; organized</div>
+        </div>
+        <div class="big-stat gsap-reveal">
+          <div class="big-stat-glow"></div>
+          <div class="big-stat-num" data-target="100">0</div>
+          <div class="big-stat-label">Percent Free</div>
+          <div class="big-stat-sub">Always &amp; forever</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 8 — SEMESTER JOURNEY / ROADMAP
+  ════════════════════════════════════════ -->
+  <section class="journey-section" id="journeySection">
+    <div class="section-header gsap-reveal">
+      <div class="section-tag">LEARNING PATH</div>
+      <h2 class="section-title">Your Semester <span class="gradient-text">Journey</span></h2>
+      <p class="section-sub">Notes organized semester-wise. Start with Semester 1 — more coming soon.</p>
+    </div>
+
+    <div class="semester-grid">
+      <!-- SEMESTER 1 — LIVE -->
+      <div class="semester-card active gsap-reveal">
+        <div class="sem-active-badge">LIVE</div>
+        <div class="sem-num">01</div>
+        <div class="sem-label">Semester 1</div>
+        <div class="sem-subjects">
+          🧬 Biochemical Thermodynamics<br/>
+          ⚗️ Engineering Chemistry<br/>
+          📐 Linear Algebra &amp; Calculus<br/>
+          🌐 Data Structures
+        </div>
+        <div class="sem-status live">● Available Now — 18 Notes</div>
+      </div>
+
+      <!-- SEMESTER 2 — COMING -->
+      <div class="semester-card coming-soon gsap-reveal">
+        <div class="sem-num">02</div>
+        <div class="sem-label">Semester 2</div>
+        <div class="sem-subjects">
+          Microbiology<br/>Biophysics<br/>
+          Organic Chemistry<br/>Biostatistics
+        </div>
+        <div class="sem-status soon">○ Coming Soon</div>
+      </div>
+
+      <!-- SEMESTER 3 -->
+      <div class="semester-card coming-soon gsap-reveal">
+        <div class="sem-num">03</div>
+        <div class="sem-label">Semester 3</div>
+        <div class="sem-subjects">
+          Genetics<br/>Plant Biotechnology<br/>
+          Molecular Biology<br/>Immunology
+        </div>
+        <div class="sem-status soon">○ Coming Soon</div>
+      </div>
+
+      <!-- SEMESTER 4 -->
+      <div class="semester-card coming-soon gsap-reveal">
+        <div class="sem-num">04</div>
+        <div class="sem-label">Semester 4</div>
+        <div class="sem-subjects">
+          Enzyme Technology<br/>Bioprocess Engg.<br/>
+          Cell Biology<br/>Bioinformatics
+        </div>
+        <div class="sem-status soon">○ Coming Soon</div>
+      </div>
+
+      <!-- SEMESTER 5 -->
+      <div class="semester-card coming-soon gsap-reveal">
+        <div class="sem-num">05</div>
+        <div class="sem-label">Semester 5</div>
+        <div class="sem-subjects">
+          Recombinant DNA<br/>Fermentation Tech.<br/>
+          Industrial Biotech<br/>Downstream Processing
+        </div>
+        <div class="sem-status soon">○ Coming Soon</div>
+      </div>
+
+      <!-- SEMESTER 6 -->
+      <div class="semester-card coming-soon gsap-reveal">
+        <div class="sem-num">06</div>
+        <div class="sem-label">Semester 6</div>
+        <div class="sem-subjects">
+          Environmental Biotech<br/>Medical Biotech<br/>
+          Genomics<br/>Proteomics
+        </div>
+        <div class="sem-status soon">○ Coming Soon</div>
+      </div>
+
+      <!-- SEMESTER 7 -->
+      <div class="semester-card coming-soon gsap-reveal">
+        <div class="sem-num">07</div>
+        <div class="sem-label">Semester 7</div>
+        <div class="sem-subjects">
+          Nanotechnology<br/>Biosecurity<br/>
+          IPR &amp; Patents<br/>Project Work
+        </div>
+        <div class="sem-status soon">○ Coming Soon</div>
+      </div>
+
+      <!-- SEMESTER 8 -->
+      <div class="semester-card coming-soon gsap-reveal">
+        <div class="sem-num">08</div>
+        <div class="sem-label">Semester 8</div>
+        <div class="sem-subjects">
+          Final Project<br/>Thesis Writing<br/>
+          Elective Specialisation<br/>Internship
+        </div>
+        <div class="sem-status soon">○ Coming Soon</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 9 — TESTIMONIALS
+  ════════════════════════════════════════ -->
+  <section class="testimonials-section" id="testimonialsSection">
+    <div class="testimonials-inner">
+      <div class="section-header gsap-reveal">
+        <div class="section-tag">STUDENT VOICES</div>
+        <h2 class="section-title">What Students <span class="gradient-text">Say</span></h2>
+        <p class="section-sub">Real feedback from B.Tech Biotechnology students.</p>
+      </div>
+
+      <div class="testimonials-carousel-wrap gsap-reveal">
+        <div class="testimonials-track" id="testimonialsTrack">
+
+          <div class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <span class="quote-mark">"</span>
+            <p class="testimonial-text">The CO-wise breakdown of BCT notes saved my exam week. Everything is so neatly categorized — I found exactly what I needed in seconds instead of digging through folders.</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">PS</div>
+              <div>
+                <div class="author-name">Priya Sharma</div>
+                <div class="author-year">2nd Year · B.Tech Biotechnology</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <span class="quote-mark">"</span>
+            <p class="testimonial-text">The fuzzy search is incredible. I typed "thermo" and got all thermodynamics notes instantly. The whole site feels super fast and the dark theme makes long study sessions much easier on the eyes.</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">RV</div>
+              <div>
+                <div class="author-name">Rahul Verma</div>
+                <div class="author-year">1st Year · B.Tech Biotechnology</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <span class="quote-mark">"</span>
+            <p class="testimonial-text">I love how clean and distraction-free the reading interface is. The inline PDF viewer means I don't have to leave the page. This platform feels premium — like it was made professionally.</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">AS</div>
+              <div>
+                <div class="author-name">Ananya Singh</div>
+                <div class="author-year">3rd Year · B.Tech Biotechnology</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <span class="quote-mark">"</span>
+            <p class="testimonial-text">LACE notes are comprehensive and perfectly organized by CO numbers. The bookmark feature helps me track what I've revised. Genuinely one of the best academic tools I've used.</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">AK</div>
+              <div>
+                <div class="author-name">Arjun Kumar</div>
+                <div class="author-year">1st Year · B.Tech Biotechnology</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="stars">★★★★★</div>
+            <span class="quote-mark">"</span>
+            <p class="testimonial-text">The 3D animations on the homepage are amazing — it actually makes studying feel exciting. But more importantly, the Chem notes are detailed and very exam-relevant. Great platform overall!</p>
+            <div class="testimonial-author">
+              <div class="author-avatar">NM</div>
+              <div>
+                <div class="author-name">Nisha Mehta</div>
+                <div class="author-year">2nd Year · B.Tech Biotechnology</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /track -->
+        <div class="testimonials-nav">
+          <button class="carousel-btn" id="testPrev" aria-label="Previous">←</button>
+          <div class="carousel-dots" id="testDots"></div>
+          <button class="carousel-btn" id="testNext" aria-label="Next">→</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 10 — FAQ
+  ════════════════════════════════════════ -->
+  <section class="faq-section" id="faqSection">
+    <div class="section-header gsap-reveal">
+      <div class="section-tag">FAQ</div>
+      <h2 class="section-title">Common <span class="gradient-text">Questions</span></h2>
+      <p class="section-sub">Everything you need to know about BioNotes.</p>
+    </div>
+
+    <div class="faq-list" id="faqList">
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          Are these notes completely free to use?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-a">Yes, 100%. BioNotes is completely free — no login, no paywall, no subscription. All notes are freely downloadable for every B.Tech Biotechnology student.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          Which semester notes are currently available?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-a">Currently Semester 1 notes are available, covering 4 subjects: Biochemical Thermodynamics (BCT), Engineering Chemistry (Chem), Linear Algebra & Calculus (LACE), and Data Structures (DS). More semesters are coming soon.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          How are the notes organized?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-a">Notes are organized by Subject → Course Outcome (CO) number. Each note is tagged with the subject code, CO number, and type (Full Notes, Combined, Practice Problems, etc.). This maps directly to the KL University curriculum.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          Can I use the notes offline?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-a">Absolutely. Click the Download button on any note to save the PDF to your device. The platform also works as a Progressive Web App (PWA) — install it to access cached notes offline.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          How does the bookmark feature work?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-a">Click the 🔖 bookmark icon on any note card to save it. Bookmarks are stored in your browser's localStorage, so they persist across sessions on the same device — no account needed.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          What subjects will be added in future semesters?
+          <span class="faq-chevron">▾</span>
+        </button>
+        <div class="faq-body">
+          <p class="faq-a">Future semesters will cover Microbiology, Genetics, Molecular Biology, Plant Biotechnology, Enzyme Technology, Bioprocess Engineering, Recombinant DNA Technology, Bioinformatics, and much more — all the core B.Tech Biotechnology subjects.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 11 — CTA BANNER
+  ════════════════════════════════════════ -->
+  <section class="cta-section" id="ctaSection">
+    <div class="cta-inner gsap-reveal">
+      <div class="cta-dna-bg">⬡</div>
+      <div class="section-tag" style="justify-content:center;display:flex;margin-bottom:1rem">START LEARNING</div>
+      <h2 class="cta-title">
+        Ready to <span class="gradient-text">Ace</span> Your<br />Biotechnology Exams?
+      </h2>
+      <p class="cta-desc">Join hundreds of B.Tech Biotech students who use BioNotes to study smarter, not harder.</p>
+      <div class="cta-actions">
+        <a href="notes.html" class="btn-primary">
+          <span class="btn-glow"></span>
+          Browse All Notes
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="search.html" class="btn-ghost">🔍 Search Topics</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 12 — FOOTER (enhanced)
+  ════════════════════════════════════════ -->
+  <footer class="footer" id="siteFooter">
     <div class="footer-inner">
-      <div class="footer-logo">
-        <span class="logo-icon">⬡</span> BioNotes
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <span class="logo-icon">⬡</span> BioNotes
+          </div>
+          <p class="footer-brand-desc">Next-generation B.Tech Biotechnology learning platform. Premium notes, zero cost.</p>
+          <div class="footer-tag">● Semester 1 — Live Now</div>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Navigate</div>
+          <a href="index.html"  class="footer-link">Home</a>
+          <a href="notes.html"  class="footer-link">Notes Browser</a>
+          <a href="search.html" class="footer-link">Smart Search</a>
+          <a href="#subjectsSection" class="footer-link">Subjects</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Subjects</div>
+          <a href="notes.html#BCT"  class="footer-link">🧬 BCT</a>
+          <a href="notes.html#Chem" class="footer-link">⚗️ Chem</a>
+          <a href="notes.html#LACE" class="footer-link">📐 LACE</a>
+          <a href="notes.html#DS"   class="footer-link">🌐 DS</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Coming Soon</div>
+          <span class="footer-muted">Semester 2 Notes</span>
+          <span class="footer-muted">AI Summaries</span>
+          <span class="footer-muted">Video Lectures</span>
+          <span class="footer-muted">Practice Quizzes</span>
+        </div>
       </div>
-      <p class="footer-sub">B.Tech Biotechnology · Semester 1 Notes Platform</p>
-      <div class="footer-links">
-        <a href="index.html">Home</a>
-        <a href="notes.html">Notes</a>
-        <a href="search.html">Search</a>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 BioNotes — Made with 💚 for B.Tech Biotechnology Students</p>
+        <div class="footer-badges">
+          <span class="footer-badge">Static Site</span>
+          <span class="footer-badge">PWA Ready</span>
+          <span class="footer-badge">100% Free</span>
+        </div>
       </div>
-      <p class="footer-copy">© 2026 BioNotes. Built for academic excellence.</p>
     </div>
   </footer>
 
+  <!-- SCRIPTS (no admin.js) -->
   <script src="assets/js/notes-data.js"></script>
+  <script src="assets/js/theme.js"></script>
   <script src="assets/js/three-scene.js"></script>
+  <script src="assets/js/gsap-animations.js"></script>
+  <script src="assets/js/cursor.js"></script>
   <script src="assets/js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+    }
+  </script>
 </body>
 </html>

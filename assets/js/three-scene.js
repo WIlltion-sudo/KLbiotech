@@ -1,314 +1,320 @@
 /**
- * BIONOTES — Three.js DNA Helix + Particle Scene
- * Pure canvas-based 3D animation (no library dependency needed)
- * Uses native Canvas 2D API for maximum compatibility
+ * BIONOTES — Real Three.js WebGL Scene v2.0
+ * Double Helix TubeGeometry | Points Particles | Orbiting Atoms
+ * Mouse-reactive camera parallax | Responsive resize
  */
-
 (function () {
   'use strict';
 
   const canvas = document.getElementById('dnaCanvas');
   if (!canvas) return;
 
-  const ctx = canvas.getContext('2d');
-  let W, H, animId;
-  let t = 0;
-
-  // ── PARTICLES ──
-  const PARTICLE_COUNT = 120;
-  const particles = [];
-
-  function resize() {
-    W = canvas.width  = canvas.offsetWidth;
-    H = canvas.height = canvas.offsetHeight;
-  }
-
-  function initParticles() {
-    particles.length = 0;
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        z: Math.random(),          // depth 0 = far, 1 = near
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 2 + 0.5,
-        hue: Math.random() > 0.5 ? 160 : 190, // green or cyan
-        opacity: Math.random() * 0.6 + 0.2,
-      });
+  /* ── Wait for Three.js to load ── */
+  function initIfReady() {
+    if (typeof THREE === 'undefined') {
+      setTimeout(initIfReady, 50);
+      return;
     }
+    init();
   }
 
-  // ── DNA HELIX ──
-  function drawDNA() {
-    const cx = W * 0.72;   // right side
-    const cy = H * 0.5;
-    const height = Math.min(H * 0.75, 520);
-    const width  = 80;
-    const segments = 22;
-    const speed = 0.4;
-
-    // Draw two strands + connecting rungs
-    for (let i = 0; i <= segments; i++) {
-      const frac  = i / segments;
-      const y     = cy - height / 2 + frac * height;
-      const angle = (frac * Math.PI * 4) + (t * speed);
-
-      const x1 = cx + Math.cos(angle) * width;
-      const x2 = cx + Math.cos(angle + Math.PI) * width;
-      const depth = (Math.sin(angle) + 1) / 2; // 0 – 1
-
-      // Rung (connecting line) — draw before strands so strands go on top
-      if (i < segments) {
-        const nextFrac  = (i + 1) / segments;
-        const nextY     = cy - height / 2 + nextFrac * height;
-        const nextAngle = (nextFrac * Math.PI * 4) + (t * speed);
-        const nx1 = cx + Math.cos(nextAngle) * width;
-        const nx2 = cx + Math.cos(nextAngle + Math.PI) * width;
-
-        if (i % 2 === 0) {
-          // Draw a base pair rung
-          const rungAlpha = 0.12 + depth * 0.2;
-          ctx.beginPath();
-          ctx.moveTo(x1, y);
-          ctx.lineTo(x2, y);
-          ctx.strokeStyle = `rgba(0,255,178,${rungAlpha})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
-      }
-
-      // Strand 1 node
-      if (i > 0) {
-        const prevFrac  = (i - 1) / segments;
-        const prevY     = cy - height / 2 + prevFrac * height;
-        const prevAngle = (prevFrac * Math.PI * 4) + (t * speed);
-        const px1 = cx + Math.cos(prevAngle) * width;
-        const px2 = cx + Math.cos(prevAngle + Math.PI) * width;
-        const prevDepth = (Math.sin(prevAngle) + 1) / 2;
-
-        // Strand 1
-        const s1Alpha = 0.3 + depth * 0.7;
-        ctx.beginPath();
-        ctx.moveTo(px1, prevY);
-        ctx.lineTo(x1, y);
-        ctx.strokeStyle = `rgba(0,255,178,${s1Alpha * 0.8})`;
-        ctx.lineWidth = 1.5 + depth;
-        ctx.stroke();
-
-        // Strand 2
-        const s2Alpha = 0.3 + (1 - depth) * 0.7;
-        ctx.beginPath();
-        ctx.moveTo(px2, prevY);
-        ctx.lineTo(x2, y);
-        ctx.strokeStyle = `rgba(0,217,255,${s2Alpha * 0.8})`;
-        ctx.lineWidth = 1.5 + (1 - depth);
-        ctx.stroke();
-      }
-
-      // Nucleotide dots
-      const dot1Alpha = 0.4 + depth * 0.6;
-      const dot2Alpha = 0.4 + (1 - depth) * 0.6;
-      const dot1Size  = 2 + depth * 3;
-      const dot2Size  = 2 + (1 - depth) * 3;
-
-      // Glow dot 1
-      const g1 = ctx.createRadialGradient(x1, y, 0, x1, y, dot1Size * 3);
-      g1.addColorStop(0, `rgba(0,255,178,${dot1Alpha})`);
-      g1.addColorStop(1, 'rgba(0,255,178,0)');
-      ctx.beginPath();
-      ctx.arc(x1, y, dot1Size * 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = g1;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(x1, y, dot1Size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0,255,178,${dot1Alpha})`;
-      ctx.fill();
-
-      // Glow dot 2
-      const g2 = ctx.createRadialGradient(x2, y, 0, x2, y, dot2Size * 3);
-      g2.addColorStop(0, `rgba(0,217,255,${dot2Alpha})`);
-      g2.addColorStop(1, 'rgba(0,217,255,0)');
-      ctx.beginPath();
-      ctx.arc(x2, y, dot2Size * 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = g2;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(x2, y, dot2Size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(0,217,255,${dot2Alpha})`;
-      ctx.fill();
-    }
-  }
-
-  // ── FLOATING ATOMS ──
-  const atoms = Array.from({ length: 6 }, (_, i) => ({
-    angle: (i / 6) * Math.PI * 2,
-    orbitR: 120 + (i % 3) * 50,
-    speed: 0.002 + i * 0.0008,
-    r: 4 + (i % 3) * 2,
-    cx: null, cy: null,
-  }));
-
-  function drawAtoms() {
-    const cx = W * 0.2;
-    const cy = H * 0.45;
-
-    // Central nucleus
-    const nucleus = ctx.createRadialGradient(cx, cy, 0, cx, cy, 30);
-    nucleus.addColorStop(0, 'rgba(123,97,255,0.8)');
-    nucleus.addColorStop(0.5, 'rgba(123,97,255,0.2)');
-    nucleus.addColorStop(1, 'rgba(123,97,255,0)');
-    ctx.beginPath();
-    ctx.arc(cx, cy, 30, 0, Math.PI * 2);
-    ctx.fillStyle = nucleus;
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(cx, cy, 8, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(123,97,255,0.9)';
-    ctx.fill();
-
-    atoms.forEach(atom => {
-      atom.angle += atom.speed;
-      atom.cx = cx + Math.cos(atom.angle) * atom.orbitR;
-      atom.cy = cy + Math.sin(atom.angle) * atom.orbitR * 0.4; // flatten orbit
-
-      // Orbit track
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, atom.orbitR, atom.orbitR * 0.4, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(123,97,255,0.06)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // Electron glow
-      const eg = ctx.createRadialGradient(atom.cx, atom.cy, 0, atom.cx, atom.cy, atom.r * 4);
-      eg.addColorStop(0, 'rgba(0,217,255,0.8)');
-      eg.addColorStop(1, 'rgba(0,217,255,0)');
-      ctx.beginPath();
-      ctx.arc(atom.cx, atom.cy, atom.r * 3, 0, Math.PI * 2);
-      ctx.fillStyle = eg;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(atom.cx, atom.cy, atom.r, 0, Math.PI * 2);
-      ctx.fillStyle = '#00D9FF';
-      ctx.fill();
-    });
-  }
-
-  // ── PARTICLES ──
-  function drawParticles() {
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0) p.x = W;
-      if (p.x > W) p.x = 0;
-      if (p.y < 0) p.y = H;
-      if (p.y > H) p.y = 0;
-
-      const size = p.r * (0.5 + p.z * 0.8);
-      const alpha = p.opacity * (0.3 + p.z * 0.5);
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${p.hue === 160 ? 160 : 190}, 100%, 65%, ${alpha})`;
-      ctx.fill();
-    });
-  }
-
-  // ── GRID LINES ──
-  function drawGrid() {
-    const step = 80;
-    ctx.strokeStyle = 'rgba(0,255,178,0.025)';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < W; x += step) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, H);
-      ctx.stroke();
-    }
-    for (let y = 0; y < H; y += step) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(W, y);
-      ctx.stroke();
-    }
-  }
-
-  // ── MAIN LOOP ──
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-
-    // Background gradient
-    const bg = ctx.createRadialGradient(W * 0.7, H * 0.3, 0, W * 0.7, H * 0.3, W * 0.7);
-    bg.addColorStop(0, 'rgba(0,255,178,0.04)');
-    bg.addColorStop(0.5, 'rgba(0,0,0,0)');
-    bg.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, W, H);
-
-    const bg2 = ctx.createRadialGradient(W * 0.2, H * 0.6, 0, W * 0.2, H * 0.6, W * 0.5);
-    bg2.addColorStop(0, 'rgba(123,97,255,0.05)');
-    bg2.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = bg2;
-    ctx.fillRect(0, 0, W, H);
-
-    drawGrid();
-    drawParticles();
-    drawAtoms();
-    drawDNA();
-
-    t += 0.008;
-    animId = requestAnimationFrame(draw);
-  }
-
-  // ── MOUSE PARALLAX ──
+  let renderer, scene, camera;
+  let helixGroup, particleSystem, atomsGroup;
+  let electronData = [];
   let mouseX = 0, mouseY = 0;
-  document.addEventListener('mousemove', e => {
-    mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
-    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-  });
+  let camTargetX = 0, camTargetY = 0;
+  let frameId;
 
-  // ── INIT ──
+  /* ── SETUP ── */
   function init() {
+    renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: window.devicePixelRatio < 2,
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setClearColor(0x000000, 0);
+
+    scene = new THREE.Scene();
+
+    camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
+    camera.position.z = 6;
+
     resize();
-    initParticles();
-    draw();
+    buildHelix();
+    buildParticles();
+    buildAtoms();
+
+    window.addEventListener('resize', resize);
+    document.addEventListener('mousemove', onMouse);
+
+    cancelAnimationFrame(frameId);
+    animate();
   }
 
-  window.addEventListener('resize', () => {
-    resize();
-    initParticles();
-  });
+  /* ── RESIZE ── */
+  function resize() {
+    const w = canvas.offsetWidth  || window.innerWidth;
+    const h = canvas.offsetHeight || window.innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
 
-  // Only run on homepage
-  window.addEventListener('DOMContentLoaded', init);
-  if (document.readyState !== 'loading') init();
+  /* ── MOUSE PARALLAX ── */
+  function onMouse(e) {
+    mouseX = (e.clientX / window.innerWidth  - 0.5);
+    mouseY = (e.clientY / window.innerHeight - 0.5);
+  }
 
-  // ── DOM PARTICLES (floating circles in hero) ──
-  const heroParticles = document.getElementById('heroParticles');
-  if (heroParticles) {
-    for (let i = 0; i < 30; i++) {
-      const el = document.createElement('div');
+  /* ── DNA DOUBLE HELIX ── */
+  function buildHelix() {
+    helixGroup = new THREE.Group();
+
+    const N      = 300;   // curve segments
+    const turns  = 3.5;
+    const radius = 1.1;
+    const height = 7;
+    const rungCount = Math.floor(turns * 8); // 28 base pairs
+
+    /* ─ Two strand tubes ─ */
+    const strandColors = ['#00FFB2', '#00D9FF'];
+    strandColors.forEach((hex, si) => {
+      const phaseOffset = si * Math.PI;
+      const pts = [];
+      for (let i = 0; i <= N; i++) {
+        const t     = i / N;
+        const y     = (t - 0.5) * height;
+        const angle = t * Math.PI * 2 * turns + phaseOffset;
+        pts.push(new THREE.Vector3(Math.cos(angle) * radius, y, Math.sin(angle) * radius));
+      }
+      const curve   = new THREE.CatmullRomCurve3(pts);
+      const tubeGeo = new THREE.TubeGeometry(curve, 500, 0.035, 6, false);
+      const color   = new THREE.Color(hex);
+
+      /* Core strand */
+      helixGroup.add(new THREE.Mesh(
+        tubeGeo,
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.9 })
+      ));
+      /* Soft glow copy */
+      const glowGeo = new THREE.TubeGeometry(curve, 200, 0.1, 6, false);
+      helixGroup.add(new THREE.Mesh(
+        glowGeo,
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.12 })
+      ));
+    });
+
+    /* ─ Rung connectors + nucleotide spheres ─ */
+    const rungMat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color('#ffffff'), transparent: true, opacity: 0.12
+    });
+    const s1Mat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color('#00FFB2'), transparent: true, opacity: 0.95
+    });
+    const s2Mat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color('#00D9FF'), transparent: true, opacity: 0.95
+    });
+    const rungGeoBase = new THREE.SphereGeometry(0.06, 6, 6);
+
+    for (let i = 0; i < rungCount; i++) {
+      const t     = i / rungCount;
+      const y     = (t - 0.5) * height;
+      const angle = t * Math.PI * 2 * turns;
+
+      const x1 = Math.cos(angle) * radius,           z1 = Math.sin(angle) * radius;
+      const x2 = Math.cos(angle + Math.PI) * radius, z2 = Math.sin(angle + Math.PI) * radius;
+      const p1 = new THREE.Vector3(x1, y, z1);
+      const p2 = new THREE.Vector3(x2, y, z2);
+
+      /* Rung cylinder */
+      const dir = new THREE.Vector3().subVectors(p2, p1);
+      const len = dir.length();
+      const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+      const cylGeo = new THREE.CylinderGeometry(0.018, 0.018, len, 4);
+      const cyl    = new THREE.Mesh(cylGeo, rungMat);
+      cyl.position.copy(mid);
+      cyl.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), dir.normalize());
+      helixGroup.add(cyl);
+
+      /* Nucleotide spheres */
+      const sp1 = new THREE.Mesh(rungGeoBase, s1Mat);
+      sp1.position.copy(p1);
+      const sp2 = new THREE.Mesh(rungGeoBase, s2Mat);
+      sp2.position.copy(p2);
+      helixGroup.add(sp1, sp2);
+    }
+
+    helixGroup.position.set(2.8, 0, 0);
+    scene.add(helixGroup);
+  }
+
+  /* ── PARTICLE FIELD ── */
+  function buildParticles() {
+    const count = 1800;
+    const pos   = new Float32Array(count * 3);
+    const col   = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i*3]   = (Math.random()-0.5) * 22;
+      pos[i*3+1] = (Math.random()-0.5) * 22;
+      pos[i*3+2] = (Math.random()-0.5) * 22;
+      const g    = Math.random() > 0.5;
+      col[i*3]   = g ? 0.0 : 0.0;
+      col[i*3+1] = g ? 1.0 : 0.85;
+      col[i*3+2] = g ? 0.7 : 1.0;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+    particleSystem = new THREE.Points(geo,
+      new THREE.PointsMaterial({
+        size: 0.045, vertexColors: true,
+        transparent: true, opacity: 0.65,
+        sizeAttenuation: true,
+      })
+    );
+    scene.add(particleSystem);
+  }
+
+  /* ── ATOM CLUSTER ── */
+  function buildAtoms() {
+    atomsGroup = new THREE.Group();
+
+    /* Nucleus */
+    const nucleus = new THREE.Mesh(
+      new THREE.SphereGeometry(0.16, 16, 16),
+      new THREE.MeshBasicMaterial({ color: new THREE.Color('#7B61FF'), transparent: true, opacity: 0.85 })
+    );
+    atomsGroup.add(nucleus);
+
+    /* Outer glow */
+    const nucleusGlow = new THREE.Mesh(
+      new THREE.SphereGeometry(0.35, 16, 16),
+      new THREE.MeshBasicMaterial({ color: new THREE.Color('#7B61FF'), transparent: true, opacity: 0.08 })
+    );
+    atomsGroup.add(nucleusGlow);
+
+    /* Orbit rings + electrons */
+    const orbits = [
+      { r: 0.55, tilt: new THREE.Euler(Math.PI/3, 0, 0),          speed: 0.012, color: '#00D9FF' },
+      { r: 0.85, tilt: new THREE.Euler(0, Math.PI/4, Math.PI/6),  speed: 0.008, color: '#00FFB2' },
+      { r: 1.1,  tilt: new THREE.Euler(Math.PI/5, Math.PI/3, 0),  speed: 0.006, color: '#7B61FF' },
+    ];
+
+    orbits.forEach((orb, idx) => {
+      /* Ring */
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(orb.r, 0.006, 8, 64),
+        new THREE.MeshBasicMaterial({ color: new THREE.Color(orb.color), transparent: true, opacity: 0.18 })
+      );
+      ring.setRotationFromEuler(orb.tilt);
+      atomsGroup.add(ring);
+
+      /* Electron */
+      const electron = new THREE.Mesh(
+        new THREE.SphereGeometry(0.065, 8, 8),
+        new THREE.MeshBasicMaterial({ color: new THREE.Color(orb.color) })
+      );
+      /* Glow halo */
+      const halo = new THREE.Mesh(
+        new THREE.SphereGeometry(0.14, 8, 8),
+        new THREE.MeshBasicMaterial({ color: new THREE.Color(orb.color), transparent: true, opacity: 0.2 })
+      );
+      electron.add(halo);
+      atomsGroup.add(electron);
+
+      electronData.push({
+        mesh:  electron,
+        orbit: orb.r,
+        tilt:  orb.tilt,
+        angle: (idx / orbits.length) * Math.PI * 2,
+        speed: orb.speed,
+      });
+    });
+
+    atomsGroup.position.set(-3.2, 0.5, 0);
+    scene.add(atomsGroup);
+  }
+
+  /* ── ANIMATION LOOP ── */
+  let tick = 0;
+  function animate() {
+    frameId = requestAnimationFrame(animate);
+    tick += 0.005;
+
+    /* Rotate helix */
+    if (helixGroup) helixGroup.rotation.y += 0.004;
+
+    /* Orbit electrons */
+    electronData.forEach(e => {
+      e.angle += e.speed;
+      /* Position on a flat circle then apply tilt */
+      const lp = new THREE.Vector3(
+        Math.cos(e.angle) * e.orbit,
+        0,
+        Math.sin(e.angle) * e.orbit
+      );
+      lp.applyEuler(e.tilt);
+      e.mesh.position.copy(lp);
+    });
+
+    /* Slowly rotate atom cluster */
+    if (atomsGroup) {
+      atomsGroup.rotation.y  += 0.003;
+      atomsGroup.position.y   = 0.5 + Math.sin(tick * 0.8) * 0.12;
+    }
+
+    /* Particle drift */
+    if (particleSystem) {
+      particleSystem.rotation.y += 0.0003;
+      particleSystem.rotation.x  = Math.sin(tick * 0.4) * 0.05;
+    }
+
+    /* Smooth camera parallax */
+    camTargetX += (mouseX * 0.6 - camTargetX) * 0.04;
+    camTargetY += (-mouseY * 0.4 - camTargetY) * 0.04;
+    camera.position.x = camTargetX;
+    camera.position.y = camTargetY;
+    camera.lookAt(0, 0, 0);
+
+    renderer.render(scene, camera);
+  }
+
+  /* ── DOM PARTICLES (floating bubbles) ── */
+  function buildDomParticles() {
+    const host = document.getElementById('heroParticles');
+    if (!host) return;
+    for (let i = 0; i < 35; i++) {
+      const el  = document.createElement('div');
       el.className = 'particle';
-      const size = Math.random() * 6 + 2;
-      const left = Math.random() * 100;
-      const delay = Math.random() * 8;
-      const duration = 8 + Math.random() * 12;
-      const drift = (Math.random() - 0.5) * 80;
-      const isGreen = Math.random() > 0.5;
+      const size   = Math.random() * 7 + 2;
+      const green  = Math.random() > 0.5;
+      const drift  = (Math.random() - 0.5) * 100;
+      const dur    = 9 + Math.random() * 14;
+      const delay  = Math.random() * 10;
       el.style.cssText = `
         width:${size}px; height:${size}px;
-        left:${left}%;
+        left:${Math.random()*100}%;
         bottom:-20px;
-        background: ${isGreen ? 'rgba(0,255,178,0.5)' : 'rgba(0,217,255,0.4)'};
-        box-shadow: 0 0 ${size * 2}px ${isGreen ? 'rgba(0,255,178,0.4)' : 'rgba(0,217,255,0.3)'};
-        animation-duration:${duration}s;
+        background:${green ? 'rgba(0,255,178,0.5)' : 'rgba(0,217,255,0.4)'};
+        box-shadow:0 0 ${size*2}px ${green ? 'rgba(0,255,178,0.35)' : 'rgba(0,217,255,0.3)'};
+        animation-duration:${dur}s;
         animation-delay:${delay}s;
-        --drift: ${drift}px;
+        --drift:${drift}px;
       `;
-      heroParticles.appendChild(el);
+      host.appendChild(el);
     }
   }
+
+  /* ── BOOT ── */
+  function boot() {
+    initIfReady();
+    buildDomParticles();
+  }
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
 })();

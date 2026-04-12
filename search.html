@@ -1,19 +1,233 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Search Notes | BioNotes</title>
-  <meta name="description" content="Search and filter B.Tech Biotechnology notes by subject, course outcome, or keyword." />
+  <meta name="description" content="Instantly search and filter B.Tech Biotechnology notes across all subjects with smart Fuse.js fuzzy search." />
+  <meta name="theme-color" content="#00FFB2" />
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/global.css" />
-  <link rel="stylesheet" href="assets/css/cards.css" />
-</head>
-<body class="search-page">
 
-  <!-- ─── NAV ─── -->
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/cards.css" />
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"></script>
+
+  <style>
+    /* ── SEARCH PAGE SPECIFIC ── */
+    .search-page-wrap {
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+    }
+    .search-hero {
+      padding: 4rem 2rem 3rem;
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .search-hero-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin-bottom: 0.75rem;
+      color: var(--clr-text);
+    }
+    .search-hero-sub {
+      color: var(--clr-text-dim);
+      font-size: 0.95rem;
+      margin-bottom: 2.5rem;
+      font-family: var(--font-mono);
+    }
+    /* Big search bar */
+    .search-bar-wrap {
+      position: relative;
+      max-width: 700px;
+      margin: 0 auto 1.5rem;
+    }
+    .search-icon {
+      position: absolute;
+      left: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--clr-text-mute);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+    #searchInput {
+      width: 100%;
+      background: var(--clr-surface-2);
+      border: 1.5px solid var(--clr-border);
+      border-radius: 99px;
+      padding: 1.1rem 3.5rem 1.1rem 3.5rem;
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      color: var(--clr-text);
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    #searchInput::placeholder { color: var(--clr-text-mute); }
+    #searchInput:focus {
+      border-color: var(--clr-primary);
+      box-shadow: 0 0 0 4px rgba(0,255,178,0.1), var(--glow-green);
+    }
+    [data-theme="light"] #searchInput {
+      background: rgba(255,255,255,0.8);
+      border-color: rgba(0,0,0,0.1);
+      color: var(--clr-text);
+    }
+    #searchClear {
+      position: absolute;
+      right: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--clr-text-mute);
+      font-size: 1rem;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    #searchClear:hover { color: var(--clr-primary); }
+
+    /* Filter groups */
+    .search-filters {
+      max-width: 700px;
+      margin: 0 auto 0.75rem;
+    }
+    .filter-group-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--clr-text-mute);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    .search-filter-btn {
+      font-family: var(--font-head);
+      font-size: 0.65rem;
+      letter-spacing: 0.07em;
+      color: var(--clr-text-dim);
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      padding: 6px 16px;
+      border-radius: 99px;
+      transition: all 0.2s;
+      cursor: none;
+    }
+    .search-filter-btn:hover { border-color: var(--clr-primary); color: var(--clr-primary); }
+    .search-filter-btn.active {
+      background: var(--clr-primary);
+      color: #000;
+      border-color: transparent;
+    }
+
+    /* Results area */
+    .search-results-area {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+    .search-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    #resultsCount {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--clr-text-mute);
+    }
+    #searchResults {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* Recent searches */
+    #recentSearches {
+      max-width: 700px;
+      margin: 0 auto 1rem;
+      text-align: left;
+    }
+    .recent-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--clr-text-mute);
+      margin-bottom: 0.5rem;
+      display: block;
+      text-transform: uppercase;
+    }
+    #recentList {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .recent-chip {
+      font-size: 0.75rem;
+      font-family: var(--font-body);
+      color: var(--clr-text-dim);
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      padding: 5px 14px;
+      border-radius: 99px;
+      transition: all 0.2s;
+      cursor: none;
+    }
+    .recent-chip:hover { border-color: var(--clr-primary); color: var(--clr-primary); }
+
+    /* No results */
+    #searchEmpty {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 5rem 2rem;
+      color: var(--clr-text-mute);
+      text-align: center;
+      grid-column: 1 / -1;
+    }
+    .empty-icon { font-size: 3rem; }
+    .empty-title { font-family: var(--font-head); font-size: 1rem; color: var(--clr-text-dim); }
+    .empty-hint  { font-size: 0.85rem; font-family: var(--font-mono); }
+
+    /* Highlight */
+    .search-highlight {
+      background: rgba(0,255,178,0.2);
+      color: var(--clr-primary);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    @media (max-width: 600px) {
+      #searchResults { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 380px) {
+      #searchResults { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="scrollProgress"></div>
+  <div id="pageTransition"></div>
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ── NAV ── -->
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <a href="index.html" class="nav-logo">
@@ -25,7 +239,8 @@
         <li><a href="notes.html" class="nav-link">Notes</a></li>
         <li><a href="search.html" class="nav-link active">Search</a></li>
       </ul>
-      <button class="nav-cta" onclick="window.location='notes.html'">Browse Notes</button>
+      <button class="theme-toggle" aria-label="Toggle theme"><span class="theme-icon">☀️</span></button>
+      <a href="notes.html" class="nav-cta">Browse Notes</a>
       <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
@@ -37,83 +252,87 @@
     </div>
   </nav>
 
-  <!-- ─── SEARCH HERO ─── -->
-  <section class="search-hero">
-    <div class="search-hero-bg"></div>
-    <div class="search-hero-content">
-      <div class="section-tag">SEARCH</div>
-      <h1 class="search-title">Find Any <span class="gradient-text">Note</span></h1>
-      <p class="search-sub">Search across all subjects, course outcomes, and topics</p>
+  <div class="search-page-wrap">
 
-      <div class="search-box-wrap">
-        <div class="search-box" id="searchBox">
-          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input
-            type="text"
-            id="searchInput"
-            class="search-input"
-            placeholder="e.g. Enzymes, CO-2, Data Structure..."
-            autocomplete="off"
-            autofocus
-          />
-          <button class="search-clear" id="searchClear" onclick="clearSearch()" aria-label="Clear search">✕</button>
-        </div>
+    <!-- SEARCH HERO -->
+    <div class="search-hero">
+      <div class="section-tag">SMART SEARCH</div>
+      <h1 class="search-hero-title">Find <span class="gradient-text">Anything</span></h1>
+      <p class="search-hero-sub">Fuzzy search across all subjects, types and course outcomes</p>
+
+      <!-- SEARCH BAR -->
+      <div class="search-bar-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Search topics, subjects, CO numbers…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button id="searchClear" aria-label="Clear search">✕</button>
       </div>
 
-      <!-- FILTER CHIPS -->
-      <div class="search-filters" id="searchFilters">
-        <span class="filter-label">Filter by subject:</span>
+      <!-- RECENT SEARCHES -->
+      <div id="recentSearches" style="display:none">
+        <span class="recent-label">Recent searches</span>
+        <div id="recentList"></div>
+      </div>
+
+      <!-- FILTERS — SUBJECT -->
+      <div class="search-filters">
+        <div class="filter-group-label">Filter by Subject</div>
         <div class="filter-chips">
-          <button class="chip active" data-subject="all" onclick="setSubjectFilter('all', this)">All</button>
-          <button class="chip" data-subject="BCT" onclick="setSubjectFilter('BCT', this)">BCT</button>
-          <button class="chip" data-subject="Chem" onclick="setSubjectFilter('Chem', this)">Chem</button>
-          <button class="chip" data-subject="LACE" onclick="setSubjectFilter('LACE', this)">LACE</button>
-          <button class="chip" data-subject="DS" onclick="setSubjectFilter('DS', this)">DS</button>
+          <button class="search-filter-btn active" data-subject="all">All Subjects</button>
+          <button class="search-filter-btn" data-subject="BCT">🧬 BCT</button>
+          <button class="search-filter-btn" data-subject="Chem">⚗️ Chem</button>
+          <button class="search-filter-btn" data-subject="LACE">📐 LACE</button>
+          <button class="search-filter-btn" data-subject="DS">🌐 DS</button>
+        </div>
+        <div class="filter-group-label">Filter by Type</div>
+        <div class="filter-chips">
+          <button class="search-filter-btn active" data-type="all">All Types</button>
+          <button class="search-filter-btn" data-type="Full Notes">Full Notes</button>
+          <button class="search-filter-btn" data-type="Combined Notes">Combined</button>
+          <button class="search-filter-btn" data-type="Practice Problems">Practice</button>
+          <button class="search-filter-btn" data-type="Programs">Programs</button>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- ─── RESULTS ─── -->
-  <section class="search-results-section">
-    <div class="search-results-header">
-      <span class="results-count" id="resultsCount">Showing all 18 notes</span>
-      <div class="results-sort">
-        <select id="sortSelect" onchange="sortResults(this.value)" class="sort-select">
-          <option value="alpha">A → Z</option>
-          <option value="subject">By Subject</option>
-        </select>
+    <!-- RESULTS -->
+    <div class="search-results-area">
+      <div class="search-meta">
+        <span id="resultsCount" class="gsap-reveal">— results found</span>
+      </div>
+
+      <div id="searchResults">
+        <div id="searchEmpty">
+          <div class="empty-icon">🔬</div>
+          <div class="empty-title">No notes found</div>
+          <div class="empty-hint">Try a different keyword or clear filters</div>
+        </div>
       </div>
     </div>
-
-    <div class="search-results-grid" id="searchResultsGrid">
-      <!-- Populated by JS -->
-    </div>
-
-    <div class="search-empty" id="searchEmpty" style="display:none">
-      <div class="empty-icon">🔬</div>
-      <h3>No notes found</h3>
-      <p>Try a different keyword or remove the subject filter.</p>
-      <button onclick="clearSearch()" class="btn-ghost" style="margin-top:1rem">Clear Search</button>
-    </div>
-  </section>
+  </div>
 
   <!-- PDF MODAL -->
-  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+  <div class="modal-overlay" id="modalOverlay">
     <div class="modal-box" onclick="event.stopPropagation()">
       <div class="modal-header">
         <h2 class="modal-title" id="modalTitle">Note Title</h2>
-        <button class="modal-close" onclick="closeModal()">✕</button>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
       </div>
+      <div id="modalPreview"></div>
       <div class="modal-body">
         <div class="modal-meta" id="modalMeta"></div>
         <div class="modal-actions">
           <a class="btn-primary" id="modalViewBtn" target="_blank" rel="noopener">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             Open PDF
           </a>
           <a class="btn-ghost" id="modalDownloadBtn" download>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download
           </a>
         </div>
@@ -122,7 +341,10 @@
   </div>
 
   <script src="assets/js/notes-data.js"></script>
-  <script src="assets/js/search.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/gsap-animations.js"></script>
+  <script src="assets/js/cursor.js"></script>
   <script src="assets/js/app.js"></script>
+  <script src="assets/js/search.js"></script>
 </body>
 </html>

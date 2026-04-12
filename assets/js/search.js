@@ -1,171 +1,260 @@
 /**
- * BIONOTES — Search Page JS
- * Real-time search with subject filter + sort
+ * BIONOTES — Fuse.js Fuzzy Search v2.0
+ * Real-time results | Debounced | Highlighted matches
+ * Filter by subject + type | Recent searches | Keyboard nav
  */
-
 (function () {
   'use strict';
 
-  let currentSubject = 'all';
-  let currentQuery   = '';
-  let currentSort    = 'alpha';
-
   const searchInput   = document.getElementById('searchInput');
-  const searchClear   = document.getElementById('searchClear');
-  const resultsGrid   = document.getElementById('searchResultsGrid');
-  const searchEmpty   = document.getElementById('searchEmpty');
+  const resultsGrid   = document.getElementById('searchResults');
   const resultsCount  = document.getElementById('resultsCount');
+  const clearBtn      = document.getElementById('searchClear');
+  const emptyState    = document.getElementById('searchEmpty');
+  const recentWrap    = document.getElementById('recentSearches');
+  const recentList    = document.getElementById('recentList');
 
-  if (!resultsGrid) return;
+  if (!searchInput || !resultsGrid) return;
 
-  // ── BUILD CARD ──
-  function buildSearchCard(note) {
-    const sub = note.subjectData;
+  /* Wait for notes data */
+  function getNotes() {
+    if (typeof getAllNotes !== 'undefined') return getAllNotes();
+    return [];
+  }
+
+  /* ── FUSE.JS SETUP ── */
+  let fuse;
+  function initFuse() {
+    const allNotes = getNotes();
+    if (!allNotes.length || typeof Fuse === 'undefined') {
+      setTimeout(initFuse, 80);
+      return;
+    }
+    fuse = new Fuse(allNotes, {
+      keys: [
+        { name: 'title',                       weight: 3 },
+        { name: 'subject',                     weight: 2 },
+        { name: 'type',                        weight: 1.5 },
+        { name: 'subjectData.name',            weight: 1 },
+      ],
+      threshold:   0.35,
+      includeMatches: true,
+      minMatchCharLength: 1,
+    });
+    /* Run initial display */
+    showAll();
+  }
+
+  /* ── RECENT SEARCHES ── */
+  const RECENT_KEY = 'bionotes-recent-searches';
+  function getRecent()     { try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch { return []; } }
+  function addRecent(q)    {
+    if (!q.trim() || q.length < 2) return;
+    let r = getRecent().filter(s => s !== q);
+    r.unshift(q);
+    r = r.slice(0, 6);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(r));
+    renderRecent();
+  }
+  function renderRecent() {
+    if (!recentList) return;
+    const r = getRecent();
+    if (!r.length || !recentWrap) return;
+    recentWrap.style.display = '';
+    recentList.innerHTML = r.map(s =>
+      `<button class="recent-chip" data-query="${s}">${s}</button>`
+    ).join('');
+    recentList.querySelectorAll('.recent-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        searchInput.value = chip.dataset.query;
+        runSearch(chip.dataset.query);
+      });
+    });
+  }
+
+  /* ── ACTIVE FILTERS ── */
+  let activeSubject = 'all';
+  let activeType    = 'all';
+
+  document.querySelectorAll('.search-filter-btn[data-subject]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.search-filter-btn[data-subject]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeSubject = btn.dataset.subject;
+      runSearch(searchInput.value);
+    });
+  });
+  document.querySelectorAll('.search-filter-btn[data-type]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.search-filter-btn[data-type]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeType = btn.dataset.type;
+      runSearch(searchInput.value);
+    });
+  });
+
+  /* ── HIGHLIGHT HELPER ── */
+  function highlight(text, matches, key) {
+    if (!matches) return text;
+    const match = matches.find(m => m.key === key);
+    if (!match || !match.indices.length) return text;
+
+    let result = '';
+    let lastIdx = 0;
+    match.indices.forEach(([start, end]) => {
+      result += text.slice(lastIdx, start);
+      result += `<mark class="search-highlight">${text.slice(start, end+1)}</mark>`;
+      lastIdx = end + 1;
+    });
+    result += text.slice(lastIdx);
+    return result;
+  }
+
+  /* ── RENDER CARD ── */
+  function renderCard(result) {
+    const note = result.item || result;
+    const matches = result.matches;
+    const subj = note.subjectData || {};
+
     const card = document.createElement('div');
-    card.className = 'note-card';
+    card.className = 'note-card search-result-card';
     card.setAttribute('data-subject', note.subject);
+
+    const titleHtml = highlight(note.title, matches, 'title');
+    const typeHtml  = highlight(note.type,  matches, 'type');
+    const rgb = subj.rgb || '0,255,178';
+    const color = subj.color || '#00FFB2';
 
     card.innerHTML = `
       <span class="note-card-pdf-badge">PDF</span>
-      <div class="note-card-tag"
-           style="--tag-color:${sub.color}; --tag-rgb:${sub.rgb}">
-        <span class="note-card-tag-dot"></span>
-        ${note.subject} · ${sub.name.split(' ')[0]}
+      <div class="note-card-tag" style="--tag-color:${color};--tag-rgb:${rgb}">
+        <span class="note-card-tag-dot"></span>${note.subject}
       </div>
-      <div class="note-card-title">${highlightMatch(note.title, currentQuery)}</div>
-      <div class="note-card-type">${note.type}</div>
+      <div class="note-card-title">${titleHtml}</div>
+      <div class="note-card-type">${typeHtml}</div>
       <div class="note-card-actions">
-        <button class="nca-btn nca-view"
-          onclick="openModal(${JSON.stringify(note).replace(/"/g, '&quot;')},
-                            ${JSON.stringify(sub).replace(/"/g, '&quot;')})">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <button class="nca-btn nca-view">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           View
         </button>
-        <a class="nca-btn nca-download" href="${note.file}" download="${note.file}" onclick="event.stopPropagation()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          DL
+        <a class="nca-btn nca-download" href="${note.file}" download="${note.file}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
         </a>
       </div>
     `;
+    card.querySelector('.nca-view').addEventListener('click', () => {
+      if (typeof openModal !== 'undefined') openModal(note, subj);
+    });
+
     return card;
   }
 
-  function highlightMatch(text, query) {
-    if (!query) return text;
-    const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
-    return text.replace(regex, '<mark style="background:rgba(0,255,178,0.25);color:inherit;border-radius:3px;padding:0 2px;">$1</mark>');
+  /* ── APPLY FILTERS ── */
+  function applyFilters(notes) {
+    return notes.filter(n => {
+      const item = n.item || n;
+      const subjectMatch = activeSubject === 'all' || item.subject === activeSubject;
+      const typeMatch    = activeType    === 'all' || item.type === activeType;
+      return subjectMatch && typeMatch;
+    });
   }
 
-  function escapeRegExp(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  /* ── SHOW ALL ── */
+  function showAll() {
+    const all = getNotes().map(n => ({ item: n, matches: [] }));
+    renderResults(applyFilters(all));
   }
 
-  // ── RENDER ──
-  function render() {
-    let results = searchNotes(currentQuery, currentSubject);
+  /* ── RUN SEARCH ── */
+  let debounceTimer;
+  function runSearch(query) {
+    const q = query.trim();
 
-    // Sort
-    if (currentSort === 'alpha') {
-      results.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (currentSort === 'subject') {
-      results.sort((a, b) => a.subject.localeCompare(b.subject) || a.title.localeCompare(b.title));
-    }
+    /* Clear X button */
+    if (clearBtn) clearBtn.style.opacity = q ? '1' : '0';
+    if (recentWrap && q) recentWrap.style.display = 'none';
+    else if (recentWrap && !q) recentWrap.style.display = '';
 
-    resultsGrid.innerHTML = '';
-
-    if (results.length === 0) {
-      searchEmpty.style.display = '';
-      resultsCount.textContent = 'No notes found';
+    if (!q) {
+      showAll();
       return;
     }
 
-    searchEmpty.style.display = 'none';
-    resultsCount.textContent = `Showing ${results.length} of ${getAllNotes().length} notes`;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      if (!fuse) { showAll(); return; }
+      const raw     = fuse.search(q);
+      const results = applyFilters(raw);
+      renderResults(results);
+    }, 140);
+  }
 
-    results.forEach((note, i) => {
-      const card = buildSearchCard(note);
-      card.style.animationDelay = `${i * 0.04}s`;
-      card.classList.add('animate-in');
-      resultsGrid.appendChild(card);
-    });
+  /* ── RENDER RESULTS ── */
+  function renderResults(results) {
+    resultsGrid.innerHTML = '';
 
-    // Enable tilt
+    if (resultsCount) {
+      resultsCount.textContent = `${results.length} result${results.length !== 1 ? 's' : ''} found`;
+    }
+
+    if (!results.length) {
+      if (emptyState) emptyState.style.display = 'flex';
+      return;
+    }
+    if (emptyState) emptyState.style.display = 'none';
+
+    const frag = document.createDocumentFragment();
+    results.forEach(r => frag.appendChild(renderCard(r)));
+    resultsGrid.appendChild(frag);
+
+    /* GSAP stagger */
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo(
+        resultsGrid.querySelectorAll('.note-card'),
+        { opacity: 0, y: 25, scale: 0.96 },
+        { opacity: 1, y: 0, scale: 1, stagger: 0.06, duration: 0.5, ease: 'power2.out' }
+      );
+    }
+
+    /* Tilt */
     setTimeout(() => {
       resultsGrid.querySelectorAll('.note-card').forEach(card => {
         card.addEventListener('mousemove', e => {
           const rect = card.getBoundingClientRect();
-          const dx = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-          const dy = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-          card.style.transform = `perspective(800px) rotateY(${dx * 8}deg) rotateX(${-dy * 8}deg) translateY(-4px) scale(1.01)`;
-          card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100).toFixed(1) + '%');
-          card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100).toFixed(1) + '%');
+          const dx = (e.clientX - rect.left - rect.width/2) / (rect.width/2);
+          const dy = (e.clientY - rect.top  - rect.height/2)/ (rect.height/2);
+          card.style.transform = `perspective(600px) rotateY(${dx*6}deg) rotateX(${-dy*6}deg) translateY(-6px) scale(1.02)`;
         });
         card.addEventListener('mouseleave', () => { card.style.transform = ''; });
       });
-    }, 50);
+    }, 100);
   }
 
-  // ── EVENTS ──
-  if (searchInput) {
-    searchInput.addEventListener('input', e => {
-      currentQuery = e.target.value.trim();
-      searchClear.style.opacity = currentQuery ? '1' : '0';
-      render();
+  /* ── INPUT EVENTS ── */
+  searchInput.addEventListener('input', e => runSearch(e.target.value));
+  searchInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') addRecent(searchInput.value);
+  });
+  if (clearBtn) {
+    clearBtn.style.opacity = '0';
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      runSearch('');
+      searchInput.focus();
     });
   }
 
-  window.clearSearch = function () {
-    if (searchInput) searchInput.value = '';
-    currentQuery = '';
-    if (searchClear) searchClear.style.opacity = '0';
-    render();
-  };
-
-  window.setSubjectFilter = function (code, btn) {
-    currentSubject = code;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    render();
-  };
-
-  window.sortResults = function (val) {
-    currentSort = val;
-    render();
-  };
-
-  // ── MODAL on search page ──
-  const modalOverlay = document.getElementById('modalOverlay');
-  const modalTitle   = document.getElementById('modalTitle');
-  const modalMeta    = document.getElementById('modalMeta');
-  const modalViewBtn = document.getElementById('modalViewBtn');
-  const modalDlBtn   = document.getElementById('modalDownloadBtn');
-
-  window.openModal = function (note, subjectData) {
-    if (!modalOverlay) return;
-    modalTitle.textContent = note.title;
-    modalMeta.innerHTML = `
-      <strong style="color:#fff">Subject:</strong> ${subjectData.name}<br>
-      <strong style="color:#fff">Code:</strong> ${note.subject}<br>
-      <strong style="color:#fff">Type:</strong> ${note.type}<br>
-      ${note.co ? `<strong style="color:#fff">Course Outcome:</strong> CO ${note.co}` : ''}
-    `;
-    modalViewBtn.href = note.file;
-    modalDlBtn.href   = note.file;
-    modalDlBtn.setAttribute('download', note.file);
-    modalOverlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  };
-
-  window.closeModal = function () {
-    if (modalOverlay) {
-      modalOverlay.classList.remove('open');
-      document.body.style.overflow = '';
+  /* ── KEYBOARD NAV ── */
+  searchInput.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown') {
+      const first = resultsGrid.querySelector('.note-card');
+      if (first) first.focus();
     }
-  };
+  });
 
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-  // ── INITIAL RENDER ──
-  render();
+  /* ── INIT ── */
+  renderRecent();
+  initFuse();
 
 })();

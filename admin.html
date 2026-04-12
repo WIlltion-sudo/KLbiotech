@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel | BioNotes</title>
+  <meta name="description" content="BioNotes admin panel — manage notes, view stats, export data." />
+  <meta name="theme-color" content="#00FFB2" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/cards.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    /* ── ADMIN PAGE ── */
+    .admin-wrap {
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+    }
+    .admin-hero {
+      padding: 4rem 2rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .admin-hero-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      margin-bottom: 0.5rem;
+      color: var(--clr-text);
+    }
+    .admin-hero-sub {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--clr-text-dim);
+    }
+    .admin-open-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: #00FFB2;
+      background: rgba(0,255,178,0.08);
+      border: 1px solid rgba(0,255,178,0.25);
+      padding: 5px 14px;
+      border-radius: 99px;
+      margin-bottom: 1.5rem;
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    /* ── TABS ── */
+    .admin-tabs {
+      display: flex;
+      gap: 0.25rem;
+      padding: 0 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--clr-border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .admin-tabs::-webkit-scrollbar { display: none; }
+    .admin-tab {
+      font-family: var(--font-head);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--clr-text-dim);
+      padding: 0.8rem 1.25rem;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .admin-tab.active, .admin-tab:hover { color: var(--clr-primary); }
+    .admin-tab.active { border-bottom-color: var(--clr-primary); }
+
+    /* ── SECTIONS ── */
+    .admin-section {
+      display: none;
+      padding: 2.5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      animation: fadeInUp 0.4s ease both;
+    }
+    .admin-section.active { display: block; }
+
+    /* ── STATS GRID ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .stat-card:hover {
+      border-color: var(--clr-border-hi);
+      transform: translateY(-4px);
+      box-shadow: var(--glow-green);
+    }
+    .stat-card-num {
+      font-family: var(--font-head);
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--clr-primary);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .stat-card-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--clr-text-mute);
+      text-transform: uppercase;
+    }
+
+    /* ── SUBJECT BREAKDOWN ── */
+    .breakdown-panel {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .panel-title {
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: var(--clr-text-dim);
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+    }
+    .stat-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--clr-border);
+      font-size: 0.85rem;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-row-icon  { font-size: 1.2rem; }
+    .stat-row-code  { font-family: var(--font-head); font-size: 0.7rem; letter-spacing: 0.1em; min-width: 40px; }
+    .stat-row-name  { flex: 1; color: var(--clr-text-dim); }
+    .stat-row-val   { font-family: var(--font-mono); font-size: 0.72rem; color: var(--clr-text-mute); }
+    .dl-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--clr-border); font-size: 0.82rem; }
+    .dl-row:last-child { border-bottom: none; }
+    .dl-file { color: var(--clr-text-dim); word-break: break-all; }
+    .dl-count { font-family: var(--font-mono); color: var(--clr-primary); flex-shrink: 0; margin-left: 1rem; }
+
+    /* ── NOTES TABLE ── */
+    .admin-table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--clr-border);
+      margin-bottom: 2rem;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .admin-table th {
+      background: var(--clr-surface-2);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-family: var(--font-head);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--clr-text-mute);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .admin-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--clr-border);
+      color: var(--clr-text-dim);
+      vertical-align: middle;
+    }
+    .notes-row:last-child td { border-bottom: none; }
+    .notes-row:hover td { background: var(--clr-surface); }
+    .custom-row td { background: rgba(123,97,255,0.04); }
+    .note-title-cell { max-width: 300px; word-break: break-word; color: var(--clr-text); }
+    .badge-subject {
+      font-family: var(--font-head);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+    }
+    .type-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      background: var(--clr-surface-2);
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .built-in-label {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--clr-text-mute);
+    }
+
+    /* ── ADMIN BUTTON ── */
+    .admin-btn {
+      font-family: var(--font-head);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid;
+      transition: all 0.2s;
+      cursor: none;
+    }
+    .admin-btn.danger {
+      color: #ff6b6b;
+      border-color: rgba(255,107,107,0.3);
+      background: rgba(255,107,107,0.05);
+    }
+    .admin-btn.danger:hover {
+      background: rgba(255,107,107,0.15);
+      border-color: #ff6b6b;
+    }
+    .admin-btn.primary {
+      color: #000;
+      background: var(--clr-primary);
+      border-color: transparent;
+    }
+    .admin-btn.primary:hover { opacity: 0.85; }
+
+    /* ── ADD NOTE FORM ── */
+    .add-form {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .form-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--clr-text-mute);
+      text-transform: uppercase;
+    }
+    .form-input, .form-select {
+      background: var(--clr-bg);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.9rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--clr-text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--clr-primary); }
+    [data-theme="light"] .form-input, [data-theme="light"] .form-select {
+      background: #fff;
+      border-color: rgba(0,0,0,0.1);
+    }
+    .form-input::placeholder { color: var(--clr-text-mute); }
+    .form-select option { background: var(--clr-bg); }
+    .form-submit {
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+      color: #000;
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: none;
+      transition: all 0.3s;
+      margin-top: 0.5rem;
+    }
+    .form-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--glow-green);
+    }
+
+    /* ── ADMIN SEARCH ── */
+    .admin-search-wrap {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+    #adminSearch {
+      width: 100%;
+      max-width: 400px;
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 1rem 0.6rem 2.5rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--clr-text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #adminSearch:focus { border-color: var(--clr-primary); }
+    .admin-search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--clr-text-mute);
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    /* ── DANGER ZONE ── */
+    .danger-zone {
+      background: rgba(255,107,107,0.04);
+      border: 1px solid rgba(255,107,107,0.2);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+    .danger-title {
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: #ff6b6b;
+      margin-bottom: 1rem;
+    }
+    .danger-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* ── IMPORT/EXPORT ── */
+    .io-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .io-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+    }
+    .io-card h3 {
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      color: var(--clr-text);
+      margin-bottom: 0.5rem;
+    }
+    .io-card p {
+      font-size: 0.8rem;
+      color: var(--clr-text-dim);
+      margin-bottom: 1rem;
+    }
+    .import-label {
+      display: inline-block;
+      font-family: var(--font-head);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--clr-primary);
+      border: 1px solid rgba(0,255,178,0.3);
+      padding: 8px 20px;
+      border-radius: var(--radius-md);
+      cursor: none;
+      transition: all 0.2s;
+    }
+    .import-label:hover { background: rgba(0,255,178,0.08); }
+    #importInput { display: none; }
+
+    /* ── TOAST ── */
+    .admin-toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--clr-primary);
+      color: #000;
+      font-family: var(--font-head);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      padding: 0.75rem 1.5rem;
+      border-radius: 99px;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      box-shadow: var(--glow-green);
+    }
+    .admin-toast.error { background: #ff6b6b; }
+
+    .empty-note { color: var(--clr-text-mute); font-family: var(--font-mono); font-size: 0.75rem; padding: 0.5rem 0; }
+
+    @media (max-width: 700px) {
+      .form-row { grid-template-columns: 1fr; }
+      .io-grid  { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="scrollProgress"></div>
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">BioNotes</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html"  class="nav-link">Home</a></li>
+        <li><a href="notes.html"  class="nav-link">Notes</a></li>
+        <li><a href="search.html" class="nav-link">Search</a></li>
+        <li><a href="admin.html"  class="nav-link active">Admin</a></li>
+      </ul>
+      <button class="theme-toggle" aria-label="Toggle theme"><span class="theme-icon">☀️</span></button>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile-menu" id="navMobileMenu">
+      <a href="index.html"  class="mobile-link">Home</a>
+      <a href="notes.html"  class="mobile-link">Notes</a>
+      <a href="search.html" class="mobile-link">Search</a>
+      <a href="admin.html"  class="mobile-link">Admin</a>
+    </div>
+  </nav>
+
+  <div class="admin-wrap">
+
+    <!-- HERO -->
+    <div class="admin-hero">
+      <div class="admin-open-badge">
+        <span style="width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;animation:pulse 2s infinite"></span>
+        OPEN ACCESS — No Login Required
+      </div>
+      <h1 class="admin-hero-title">Admin <span class="gradient-text">Panel</span></h1>
+      <p class="admin-hero-sub">Manage notes, view analytics &amp; export data</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="stats">📊 Statistics</button>
+      <button class="admin-tab" data-tab="notes">📄 Manage Notes</button>
+      <button class="admin-tab" data-tab="add">➕ Add Note</button>
+      <button class="admin-tab" data-tab="data">💾 Import / Export</button>
+    </div>
+
+    <!-- TAB: STATS -->
+    <div class="admin-section active" id="tab-stats">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-num" id="statNotes">—</div>
+          <div class="stat-card-label">Total Notes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num" id="statDownloads">—</div>
+          <div class="stat-card-label">Total Downloads</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num" id="statBookmarks">—</div>
+          <div class="stat-card-label">Bookmarked</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num" id="statCustom">—</div>
+          <div class="stat-card-label">Custom Added</div>
+        </div>
+      </div>
+
+      <div class="breakdown-panel">
+        <div class="panel-title">Subject Breakdown</div>
+        <div id="subjectBreakdown"></div>
+      </div>
+
+      <div class="breakdown-panel">
+        <div class="panel-title">Top Downloaded</div>
+        <div id="topDownloaded"></div>
+      </div>
+    </div>
+
+    <!-- TAB: MANAGE NOTES -->
+    <div class="admin-section" id="tab-notes">
+      <div class="admin-search-wrap">
+        <span class="admin-search-icon">🔍</span>
+        <input type="search" id="adminSearch" placeholder="Filter notes by title, subject…" />
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Title</th>
+              <th>Type</th>
+              <th>CO</th>
+              <th>Downloads</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="notesTableBody">
+            <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--clr-text-mute);font-family:var(--font-mono);font-size:0.75rem">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="danger-zone">
+        <div class="danger-title">⚠ DANGER ZONE</div>
+        <div class="danger-actions">
+          <button class="admin-btn danger" id="clearDownloads">Reset Download Counters</button>
+          <button class="admin-btn danger" id="clearBookmarks">Clear All Bookmarks</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: ADD NOTE -->
+    <div class="admin-section" id="tab-add">
+      <p style="font-size:0.85rem;color:var(--clr-text-dim);margin-bottom:1.5rem;font-family:var(--font-mono)">
+        📁 Add a custom note entry. Place the PDF file in the project root first, then register it here. Custom notes are stored in your browser's localStorage.
+      </p>
+      <form class="add-form" id="addNoteForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="nFile">PDF Filename *</label>
+            <input class="form-input" id="nFile" name="file" type="text" placeholder="e.g. MyNotes.pdf" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nSubject">Subject *</label>
+            <select class="form-select" id="nSubject" name="subject" required>
+              <option value="">Select subject</option>
+              <option value="BCT">BCT — Biochemical Thermodynamics</option>
+              <option value="Chem">Chem — Engineering Chemistry</option>
+              <option value="LACE">LACE — Linear Algebra &amp; Calculus</option>
+              <option value="DS">DS — Data Structure</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:1rem">
+          <label class="form-label" for="nTitle">Note Title *</label>
+          <input class="form-input" id="nTitle" name="title" type="text" placeholder="e.g. Engineering Chemistry — CO 4" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="nCO">Course Outcome</label>
+            <input class="form-input" id="nCO" name="co" type="number" min="1" max="6" placeholder="e.g. 4" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nType">Type</label>
+            <select class="form-select" id="nType" name="type">
+              <option>Full Notes</option>
+              <option>Combined Notes</option>
+              <option>Practice Problems</option>
+              <option>Programs</option>
+            </select>
+          </div>
+        </div>
+        <button class="form-submit" type="submit">➕ Add Note to Registry</button>
+      </form>
+    </div>
+
+    <!-- TAB: IMPORT / EXPORT -->
+    <div class="admin-section" id="tab-data">
+      <div class="io-grid">
+        <div class="io-card">
+          <h3>📤 Export Data</h3>
+          <p>Download all custom notes, download counts, and bookmarks as a JSON file for backup.</p>
+          <button class="admin-btn primary" id="exportBtn">Export JSON</button>
+        </div>
+        <div class="io-card">
+          <h3>📥 Import Data</h3>
+          <p>Restore a previously exported JSON file. This will overwrite current custom data.</p>
+          <label class="import-label" for="importInput">Choose JSON File</label>
+          <input type="file" id="importInput" accept=".json" />
+        </div>
+      </div>
+      <div class="breakdown-panel" style="margin-top:0">
+        <div class="panel-title">How Custom Notes Work</div>
+        <div style="font-size:0.84rem;color:var(--clr-text-dim);line-height:1.8;font-family:var(--font-mono)">
+          1. Place your PDF file in the project root folder (<code style="color:var(--clr-primary)">d:\KLbiotech\</code>)<br>
+          2. Go to <strong>Add Note</strong> and fill in the filename exactly as it appears<br>
+          3. Your note will appear in the Notes browser and Search immediately<br>
+          4. Custom notes are saved in your browser — export to share with others
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /admin-wrap -->
+
+  <script src="assets/js/notes-data.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/gsap-animations.js"></script>
+  <script src="assets/js/cursor.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

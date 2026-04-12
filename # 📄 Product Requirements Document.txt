@@ -1,0 +1,218 @@
+# 📄 Product Requirements Document (PRD)
+
+## Project Title: Biotech Notes Hub – Interactive Learning Platform
+
+---
+
+## 1. 📌 Overview
+
+The Biotech Notes Hub is a modern, highly interactive web platform designed for Bachelor of Technology (B.Tech) students from the Biotechnology department. The platform will provide structured academic notes, visual learning materials, and engaging UI/UX powered by smooth animations, micro-interactions, and immersive effects.
+
+The goal is to transform traditional static notes into a dynamic, visually rich, and intuitive learning experience.
+
+---
+
+## 2. 🎯 Objectives
+
+* Provide organized, semester-wise and subject-wise biotech notes
+* Enhance user engagement with smooth animations and transitions
+* Improve readability and retention through interactive UI
+* Deliver a premium, modern website experience
+* Ensure fast, responsive, and seamless navigation
+
+---
+
+## 3. 👥 Target Users
+
+* B.Tech Biotechnology students (1st–4th year)
+* Students preparing for exams (semester / GATE / competitive exams)
+* Faculty (optional contributors)
+
+---
+
+## 4. 🧩 Core Features
+
+### 4.1 📚 Notes System
+
+* Semester-wise categorization (1–8 semesters)
+* Subject-wise breakdown (e.g., Genetics, Microbiology, Biochemistry)
+* Chapter-wise structured notes
+* Downloadable PDFs
+* Search functionality
+* Bookmark / save notes
+
+---
+
+### 4.2 🎨 UI/UX & Animation Features
+
+#### ✨ Smooth Animations
+
+* Page transitions with fade, slide, and scale effects
+* Smooth scrolling across sections
+* Section-based reveal animations
+
+#### 🖱️ Micro-Interactions
+
+* Button hover effects (scale, glow, ripple)
+* Click feedback animations
+* Interactive cards (tilt, shadow movement)
+
+#### 🎬 Entrance Reveal Effects
+
+* Staggered text animations
+* Fade-in sections on scroll
+* Progressive content loading
+
+#### 🌊 Parallax Effects
+
+* Multi-layer scrolling backgrounds
+* Depth-based movement for sections
+* Hero section parallax visuals
+
+#### 🎯 Cursor Effects
+
+* Custom animated cursor
+* Hover-based cursor transformations
+* Magnetic button interactions
+
+#### 🧊 3D Motion Effects
+
+* 3D card tilt on hover
+* Interactive hero section visuals
+* Depth-based UI elements
+
+#### ⏳ Smooth Loader
+
+* Animated loading screen (Lottie-style)
+* Skeleton loading for content
+* Page transition loaders
+
+---
+
+## 5. 🧱 Layout & Sections (Add Maximum Frames)
+
+The design should include **as many UI frames/sections as possible** to create a rich experience:
+
+### 🏠 Homepage Frames
+
+* Hero section with animated intro
+* Featured subjects carousel
+* Trending notes section
+* Quick access cards
+* Animated statistics (students, notes, downloads)
+* Testimonials (optional)
+
+### 📖 Notes Page Frames
+
+* Sidebar navigation (subjects/semesters)
+* Expandable accordion sections
+* Sticky navigation bar
+* Interactive content blocks
+
+### 🔍 Search Page
+
+* Animated search bar
+* Real-time filtering
+* Result cards with hover effects
+
+### 📄 Note Detail Page
+
+* Smooth scroll reading experience
+* Highlighted keywords
+* Interactive diagrams (optional)
+* Floating table of contents
+
+### 👤 User Dashboard (Optional)
+
+* Saved notes
+* Recently viewed
+* Progress tracking
+
+---
+
+## 6. ⚡ Performance Requirements
+
+* Fast load time (<2 seconds)
+* Smooth 60 FPS animations
+* Lazy loading for images and content
+* Optimized assets and scripts
+
+---
+
+## 7. 📱 Responsiveness
+
+* Fully responsive (mobile, tablet, desktop)
+* Touch-friendly interactions
+* Adaptive animations (lighter on mobile)
+
+---
+
+## 8. 🧠 Usability Requirements
+
+* Clean and distraction-free reading mode
+* Easy navigation between subjects and topics
+* Minimal cognitive load
+* Accessibility considerations (contrast, readability)
+
+---
+
+## 9. 🛠️ Suggested Tech Stack
+
+### Frontend:
+
+* React / Next.js
+* Animation libraries (GSAP / Framer Motion)
+* CSS frameworks (Tailwind / SCSS)
+
+### Backend:
+
+* Node.js / Firebase (for notes storage and user data)
+
+### Assets:
+
+* Lottie animations
+* SVG illustrations
+* Optimized images
+
+---
+
+## 10. 🎯 Design Guidelines
+
+* Modern, minimal UI with biotech-themed visuals
+* Use gradients, glassmorphism, or neumorphism where appropriate
+* Consistent animation timing and easing
+* Avoid overuse of heavy effects (balance aesthetics & performance)
+
+---
+
+## 11. 📈 Future Enhancements
+
+* AI-based note summarization
+* Video lectures integration
+* Quiz & practice modules
+* Community discussion forum
+* Dark mode with animated transitions
+
+---
+
+## 12. ✅ Success Metrics
+
+* User engagement time
+* Bounce rate reduction
+* Notes download rate
+* Returning users percentage
+
+---
+
+## 13. 🚀 Final Notes
+
+* Prioritize smoothness and performance over excessive effects
+* Add **as many UI frames and sections as possible** to enrich the experience
+* Maintain consistency in animation styles across the entire website
+* Ensure the platform feels fast, fluid, and premium
+
+---
+
+## 🔚 Conclusion
+
+The Biotech Notes Hub should not just be a notes website—it should be an immersive learning experience that feels modern, interactive, and engaging, helping students learn more effectively while enjoying the interface. Remove the admin panel from the webpage as it is a free for all webpage admin page is not required 
