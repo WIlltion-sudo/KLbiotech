@@ -49,33 +49,33 @@ const SUBJECTS = [
 
 const RAW_FILES = [
   // BCT
-  { file: 'BCT CO1.pdf',    subject: 'BCT',  title: 'Biochemical Thermodynamics — CO 1',          co: 1,    type: 'Full Notes',     trending: true  },
-  { file: 'BCT CO2.pdf',    subject: 'BCT',  title: 'Biochemical Thermodynamics — CO 2',          co: 2,    type: 'Full Notes',     trending: false },
-  { file: 'BCT CO3 AND CO4.pdf', subject: 'BCT', title: 'Biochemical Thermodynamics — CO 3 & 4',  co: null, type: 'Combined Notes', trending: true  },
+  { file: 'BCT.md/BCT CO1.pdf',    subject: 'BCT',  title: 'Biochemical Thermodynamics — CO 1',          co: 1,    type: 'Full Notes',     trending: true  },
+  { file: 'BCT.md/BCT CO2.pdf',    subject: 'BCT',  title: 'Biochemical Thermodynamics — CO 2',          co: 2,    type: 'Full Notes',     trending: false },
+  { file: 'BCT.md/BCT CO3 AND CO4.pdf', subject: 'BCT', title: 'Biochemical Thermodynamics — CO 3 & 4',  co: null, type: 'Combined Notes', trending: true  },
 
   // Chem
-  { file: 'chem co1,2.pdf',  subject: 'Chem', title: 'Engineering Chemistry — CO 1 & 2',          co: null, type: 'Combined Notes', trending: true  },
-  { file: 'chem co1pdf.pdf', subject: 'Chem', title: 'Engineering Chemistry — CO 1',              co: 1,    type: 'Full Notes',     trending: false },
-  { file: 'Chem CO2.pdf',    subject: 'Chem', title: 'Engineering Chemistry — CO 2',              co: 2,    type: 'Full Notes',     trending: true  },
-  { file: 'Chem CO3 notes.pdf', subject: 'Chem', title: 'Engineering Chemistry — CO 3',           co: 3,    type: 'Full Notes',     trending: false },
+  { file: 'Chem.md/chem co1,2.pdf',  subject: 'Chem', title: 'Engineering Chemistry — CO 1 & 2',          co: null, type: 'Combined Notes', trending: true  },
+  { file: 'Chem.md/chem co1pdf.pdf', subject: 'Chem', title: 'Engineering Chemistry — CO 1',              co: 1,    type: 'Full Notes',     trending: false },
+  { file: 'Chem.md/Chem CO2.pdf',    subject: 'Chem', title: 'Engineering Chemistry — CO 2',              co: 2,    type: 'Full Notes',     trending: true  },
+  { file: 'Chem.md/Chem CO3 notes.pdf', subject: 'Chem', title: 'Engineering Chemistry — CO 3',           co: 3,    type: 'Full Notes',     trending: false },
 
   // LACE — Core Notes
-  { file: 'LACE CO-1 NOTES.pdf',   subject: 'LACE', title: 'Linear Algebra & Calculus — CO 1 Notes',   co: 1, type: 'Full Notes',     trending: true  },
-  { file: 'LACE CO-2 NOTES.pdf',   subject: 'LACE', title: 'Linear Algebra & Calculus — CO 2 Notes',   co: 2, type: 'Full Notes',     trending: false },
-  { file: 'Lace CO3 notes.pdf',    subject: 'LACE', title: 'Linear Algebra & Calculus — CO 3 Notes',   co: 3, type: 'Full Notes',     trending: false },
-  { file: 'Lace_CO-4_NOTES.pdf',   subject: 'LACE', title: 'Linear Algebra & Calculus — CO 4 Notes',   co: 4, type: 'Full Notes',     trending: false },
+  { file: 'LACE.md/LACE CO-1 NOTES.pdf',   subject: 'LACE', title: 'Linear Algebra & Calculus — CO 1 Notes',   co: 1, type: 'Full Notes',     trending: true  },
+  { file: 'LACE.md/LACE CO-2 NOTES.pdf',   subject: 'LACE', title: 'Linear Algebra & Calculus — CO 2 Notes',   co: 2, type: 'Full Notes',     trending: false },
+  { file: 'LACE.md/Lace CO3 notes.pdf',    subject: 'LACE', title: 'Linear Algebra & Calculus — CO 3 Notes',   co: 3, type: 'Full Notes',     trending: false },
+  { file: 'LACE.md/Lace_CO-4_NOTES.pdf',   subject: 'LACE', title: 'Linear Algebra & Calculus — CO 4 Notes',   co: 4, type: 'Full Notes',     trending: false },
 
   // LACE — Classroom Problems
-  { file: 'CO-1 CLASS ROOM PROBLEMS.pdf',          subject: 'LACE', title: 'LACE — CO 1 Classroom Problems',          co: 1, type: 'Practice Problems', trending: false },
-  { file: 'CO-2 CLASS ROOM PROBLEMS.pdf',          subject: 'LACE', title: 'LACE — CO 2 Classroom Problems',          co: 2, type: 'Practice Problems', trending: false },
-  { file: 'CO-3 CLASSROOM PROBLEMS.pdf',           subject: 'LACE', title: 'LACE — CO 3 Classroom Problems',          co: 3, type: 'Practice Problems', trending: false },
-  { file: 'CO-4 CLASS ROOM DELIVERY PROBLEMS.pdf', subject: 'LACE', title: 'LACE — CO 4 Classroom Delivery Problems', co: 4, type: 'Practice Problems', trending: false },
+  { file: 'LACE.md/CO-1 CLASS ROOM PROBLEMS.pdf',          subject: 'LACE', title: 'LACE — CO 1 Classroom Problems',          co: 1, type: 'Practice Problems', trending: false },
+  { file: 'LACE.md/CO-2 CLASS ROOM PROBLEMS.pdf',          subject: 'LACE', title: 'LACE — CO 2 Classroom Problems',          co: 2, type: 'Practice Problems', trending: false },
+  { file: 'LACE.md/CO-3 CLASSROOM PROBLEMS.pdf',           subject: 'LACE', title: 'LACE — CO 3 Classroom Problems',          co: 3, type: 'Practice Problems', trending: false },
+  { file: 'LACE.md/CO-4 CLASS ROOM DELIVERY PROBLEMS.pdf', subject: 'LACE', title: 'LACE — CO 4 Classroom Delivery Problems', co: 4, type: 'Practice Problems', trending: false },
 
   // DS
-  { file: 'Ds_Co1.pdf',                           subject: 'DS',   title: 'Data Structure — CO 1',                    co: 1,    type: 'Full Notes',     trending: true  },
-  { file: 'DS_CO2.pdf',                           subject: 'DS',   title: 'Data Structure — CO 2',                    co: 2,    type: 'Full Notes',     trending: false },
-  { file: 'Ds_Co3Co4_programs.pdf',               subject: 'DS',   title: 'Data Structure — CO 3 & 4 Programs',       co: null, type: 'Programs',       trending: true  },
-  { file: 'Data structure notes CO 1,2,3,4..pdf', subject: 'DS',   title: 'Data Structure — CO 1, 2, 3, 4 (Full)',    co: null, type: 'Combined Notes', trending: false },
+  { file: 'DS.md/Ds_Co1.pdf',                           subject: 'DS',   title: 'Data Structure — CO 1',                    co: 1,    type: 'Full Notes',     trending: true  },
+  { file: 'DS.md/DS_CO2.pdf',                           subject: 'DS',   title: 'Data Structure — CO 2',                    co: 2,    type: 'Full Notes',     trending: false },
+  { file: 'DS.md/Ds_Co3Co4_programs.pdf',               subject: 'DS',   title: 'Data Structure — CO 3 & 4 Programs',       co: null, type: 'Programs',       trending: true  },
+  { file: 'DS.md/Data structure notes CO 1,2,3,4..pdf', subject: 'DS',   title: 'Data Structure — CO 1, 2, 3, 4 (Full)',    co: null, type: 'Combined Notes', trending: false },
 ];
 
 /**

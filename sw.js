@@ -3,7 +3,7 @@
    Cache-first for static assets | Network-first for PDFs
 ═══════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'bionotes-v2';
+const CACHE_NAME = 'bionotes-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
