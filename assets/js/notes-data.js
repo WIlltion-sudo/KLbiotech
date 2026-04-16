@@ -51,12 +51,13 @@ const RAW_FILES = [
   // BCT
   { file: 'BCT CO1.pdf',    subject: 'BCT',  title: 'Biochemical Thermodynamics — CO 1',          co: 1,    type: 'Full Notes',     trending: true  },
   { file: 'BCT CO2.pdf',    subject: 'BCT',  title: 'Biochemical Thermodynamics — CO 2',          co: 2,    type: 'Full Notes',     trending: false },
+  { file: 'BCT CO3 AND CO4.pdf', subject: 'BCT', title: 'Biochemical Thermodynamics — CO 3 & 4',  co: null, type: 'Combined Notes', trending: true  },
 
   // Chem
   { file: 'chem co1,2.pdf',  subject: 'Chem', title: 'Engineering Chemistry — CO 1 & 2',          co: null, type: 'Combined Notes', trending: true  },
   { file: 'chem co1pdf.pdf', subject: 'Chem', title: 'Engineering Chemistry — CO 1',              co: 1,    type: 'Full Notes',     trending: false },
   { file: 'Chem CO2.pdf',    subject: 'Chem', title: 'Engineering Chemistry — CO 2',              co: 2,    type: 'Full Notes',     trending: true  },
-  { file: 'chem co3.pdf',    subject: 'Chem', title: 'Engineering Chemistry — CO 3',              co: 3,    type: 'Full Notes',     trending: false },
+  { file: 'Chem CO3 notes.pdf', subject: 'Chem', title: 'Engineering Chemistry — CO 3',           co: 3,    type: 'Full Notes',     trending: false },
 
   // LACE — Core Notes
   { file: 'LACE CO-1 NOTES.pdf',   subject: 'LACE', title: 'Linear Algebra & Calculus — CO 1 Notes',   co: 1, type: 'Full Notes',     trending: true  },
