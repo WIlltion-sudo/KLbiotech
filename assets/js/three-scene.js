@@ -22,7 +22,8 @@
   let helixGroup, particleSystem, atomsGroup;
   let electronData = [];
   let mouseX = 0, mouseY = 0;
-  let camTargetX = 0, camTargetY = 0;
+  let camTargetX = 0, camTargetY = 0, camTargetZ = 6;
+  let targetScroll = 0, currentScroll = 0;
   let frameId;
 
   /* ── SETUP ── */
@@ -44,12 +45,66 @@
     buildHelix();
     buildParticles();
     buildAtoms();
+    initScrollSync();
 
     window.addEventListener('resize', resize);
     document.addEventListener('mousemove', onMouse);
 
     cancelAnimationFrame(frameId);
     animate();
+  }
+
+  /* ── SCROLL SYNC ── */
+  function initScrollSync() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+      setTimeout(initScrollSync, 50);
+      return;
+    }
+    gsap.registerPlugin(ScrollTrigger);
+
+    ScrollTrigger.create({
+      trigger: document.body,
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: (self) => {
+        targetScroll = self.progress; 
+      }
+    });
+
+    ScrollTrigger.create({
+      trigger: '#featuresSection',
+      start: 'top center',
+      end: 'bottom center',
+      onEnter: () => { 
+        camTargetZ = 4.5; 
+        if(helixGroup) gsap.to(helixGroup.position, {x: 0, duration: 1.5, ease: 'power2.out'}); 
+        if(atomsGroup) gsap.to(atomsGroup.position, {x: 3.2, duration: 1.5, ease: 'power2.out'});
+      },
+      onLeaveBack: () => { 
+        camTargetZ = 6; 
+        if(helixGroup) gsap.to(helixGroup.position, {x: 2.8, duration: 1.5, ease: 'power2.out'}); 
+        if(atomsGroup) gsap.to(atomsGroup.position, {x: -3.2, duration: 1.5, ease: 'power2.out'});
+      },
+      onEnterBack: () => { 
+        camTargetZ = 4.5; 
+        if(helixGroup) gsap.to(helixGroup.position, {x: 0, duration: 1.5, ease: 'power2.out'}); 
+        if(atomsGroup) gsap.to(atomsGroup.position, {x: 3.2, duration: 1.5, ease: 'power2.out'});
+      },
+      onLeave: () => { 
+        camTargetZ = 6.5; 
+        if(helixGroup) gsap.to(helixGroup.position, {x: -2.8, duration: 1.5, ease: 'power2.out'});
+        if(atomsGroup) gsap.to(atomsGroup.position, {x: 0, duration: 1.5, ease: 'power2.out'});
+      },
+    });
+
+    ScrollTrigger.create({
+      trigger: '#subjectsSection',
+      start: 'top center',
+      onEnter: () => {
+        camTargetZ = 5.5; 
+        if(helixGroup) gsap.to(helixGroup.position, {x: 3.5, duration: 1.5, ease: 'power2.out'});
+      }
+    });
   }
 
   /* ── RESIZE ── */
@@ -238,12 +293,31 @@
 
   /* ── ANIMATION LOOP ── */
   let tick = 0;
+  let currentTickSpeed = 0.005;
+  let targetTickSpeed = 0.005;
+
+  /* Bio-reactive hover acceleration */
+  document.addEventListener('mouseover', (e) => {
+    if (e.target.closest('a, button, .subject-card, .subject-card-carousel, .note-card, .feature-card, .step-card, .testimonial-card, .trending-note-card')) {
+      targetTickSpeed = 0.035;
+    }
+  });
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.closest('a, button, .subject-card, .subject-card-carousel, .note-card, .feature-card, .step-card, .testimonial-card, .trending-note-card')) {
+      targetTickSpeed = 0.005;
+    }
+  });
+
   function animate() {
     frameId = requestAnimationFrame(animate);
-    tick += 0.005;
+    currentTickSpeed += (targetTickSpeed - currentTickSpeed) * 0.05;
+    tick += currentTickSpeed;
+
+    /* Smooth scroll tracking */
+    currentScroll += (targetScroll - currentScroll) * 0.08;
 
     /* Rotate helix */
-    if (helixGroup) helixGroup.rotation.y += 0.004;
+    if (helixGroup) helixGroup.rotation.y = tick * 0.8 + currentScroll * Math.PI * 4;
 
     /* Orbit electrons */
     electronData.forEach(e => {
@@ -260,14 +334,14 @@
 
     /* Slowly rotate atom cluster */
     if (atomsGroup) {
-      atomsGroup.rotation.y  += 0.003;
-      atomsGroup.position.y   = 0.5 + Math.sin(tick * 0.8) * 0.12;
+      atomsGroup.rotation.y  = tick * 0.6 - currentScroll * Math.PI * 2;
+      atomsGroup.position.y  = 0.5 + Math.sin(tick * 0.8) * 0.12 + currentScroll * 2;
     }
 
     /* Particle drift */
     if (particleSystem) {
       particleSystem.rotation.y += 0.0003;
-      particleSystem.rotation.x  = Math.sin(tick * 0.4) * 0.05;
+      particleSystem.rotation.x  = Math.sin(tick * 0.4) * 0.05 + currentScroll * 0.5;
     }
 
     /* Smooth camera parallax */
@@ -275,6 +349,7 @@
     camTargetY += (-mouseY * 0.4 - camTargetY) * 0.04;
     camera.position.x = camTargetX;
     camera.position.y = camTargetY;
+    camera.position.z += (camTargetZ - camera.position.z) * 0.04;
     camera.lookAt(0, 0, 0);
 
     renderer.render(scene, camera);

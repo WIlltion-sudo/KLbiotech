@@ -15,19 +15,21 @@
 
 /* ── THREE.JS CANVAS ── */
 .dna-canvas {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: -1;
   pointer-events: none;
 }
 
 /* ── DOM PARTICLES HOST ── */
 .hero-particles {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
   pointer-events: none;
   overflow: hidden;
 }

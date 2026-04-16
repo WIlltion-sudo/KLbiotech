@@ -209,9 +209,10 @@
     }
   }
 
-  /* ── MAGNETIC BUTTONS ── */
+  /* ── MAGNETIC BUTTONS (Expanded Fluidity) ── */
   function initMagneticButtons() {
-    document.querySelectorAll('.btn-primary, .btn-ghost, .nav-cta').forEach(btn => {
+    const magneticTargets = '.btn-primary, .btn-ghost, .nav-cta, .tn-btn, .carousel-btn, .nav-link, .view-all-btn, .theme-toggle, .filter-btn, .bc-link';
+    document.querySelectorAll(magneticTargets).forEach(btn => {
       const strength = 0.35;
       btn.addEventListener('mousemove', e => {
         const rect = btn.getBoundingClientRect();
@@ -225,6 +226,64 @@
         gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.4)' });
       });
     });
+  }
+
+  /* ── 3D TILT CARDS ── */
+  function initTiltCards() {
+    document.querySelectorAll('.feature-card, .subject-card, .subject-card-carousel, .note-card, .step-card, .testimonial-card, .trending-note-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = (e.clientX - cx) / (rect.width / 2);
+        const dy = (e.clientY - cy) / (rect.height / 2);
+        gsap.to(card, {
+          rotationY: dx * 10,
+          rotationX: -dy * 10,
+          transformPerspective: 1000,
+          transformOrigin: 'center center',
+          ease: 'power2.out',
+          duration: 0.4
+        });
+      });
+      card.addEventListener('mouseleave', () => {
+        gsap.to(card, {
+          rotationY: 0,
+          rotationX: 0,
+          ease: 'elastic.out(1, 0.4)',
+          duration: 0.8
+        });
+      });
+    });
+  }
+
+  /* ── DATA DECODING EFFECT ── */
+  function decodeText(element) {
+    if (!element) return;
+    const originalText = element.textContent;
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ΣπΦΛΔΩ∞∫';
+    let iter = 0;
+    
+    // Store original height so decoding doesn't collapse layout if line-breaks change
+    const h = element.offsetHeight;
+    element.style.minHeight = h + 'px';
+
+    const interval = setInterval(() => {
+      element.textContent = originalText.split('').map((letter, index) => {
+        if (index < iter) {
+          return originalText[index];
+        }
+        if (originalText[index] === ' ') return ' ';
+        return chars[Math.floor(Math.random() * chars.length)];
+      }).join('');
+      
+      if (iter >= originalText.length) {
+        clearInterval(interval);
+        element.textContent = originalText;
+        element.style.minHeight = 'auto';
+      }
+      iter += 1/3;
+    }, 25);
   }
 
   /* ── WRAP TITLE WORDS FOR ANIMATION ── */
@@ -294,6 +353,7 @@
     runPreloader();
     whenReady(initScrollAnimations);
     whenReady(initMagneticButtons);
+    whenReady(initTiltCards);
   }
 
   if (document.readyState === 'loading') {
