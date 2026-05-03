@@ -8,6 +8,12 @@
   <meta name="theme-color" content="#00FFB2" />
   <link rel="manifest" href="manifest.json" />
 
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png" />
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -59,11 +65,10 @@
         <span class="logo-icon">⬡</span>
         <span class="logo-text">BioNotes</span>
       </a>
-      <ul class="nav-links">
-        <li><a href="index.html"  class="nav-link active">Home</a></li>
-        <li><a href="notes.html"  class="nav-link">Notes</a></li>
-        <li><a href="search.html" class="nav-link">Search</a></li>
-      </ul>
+
+      <!-- GooeyNav replaces the plain link list -->
+      <div id="gooeyNavContainer" class="gooey-nav-wrapper" style="display:flex;align-items:center;"></div>
+
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
         <span class="theme-icon">☀️</span>
       </button>
@@ -665,6 +670,36 @@
   <script src="assets/js/gsap-animations.js"></script>
   <script src="assets/js/cursor.js"></script>
   <script src="assets/js/app.js"></script>
+
+  <!-- ═══ GooeyNav ═══ -->
+  <script src="assets/js/gooey-nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var gooeyContainer = document.getElementById('gooeyNavContainer');
+      if (gooeyContainer && window.initGooeyNav) {
+        var navItems = [
+          { label: 'Home',    href: 'index.html'  },
+          { label: 'Notes',   href: 'notes.html'  },
+          { label: 'Search',  href: 'search.html' },
+        ];
+        /* Detect current page to set initial active */
+        var page = window.location.pathname.split('/').pop() || 'index.html';
+        var initIdx = page === 'notes.html' ? 1 : page === 'search.html' ? 2 : 0;
+        window.initGooeyNav(gooeyContainer, navItems, {
+          particleCount:       15,
+          particleDistances:   [90, 10],
+          particleR:           100,
+          initialActiveIndex:  initIdx,
+          animationTime:       600,
+          timeVariance:        300,
+          colors:              [1, 2, 3, 1, 2, 3, 1, 4],
+        });
+      }
+    });
+  </script>
+
+
+
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));

@@ -11,8 +11,8 @@
      BOOKMARK SYSTEM
   ════════════════════════════════ */
   const BKMARK_KEY = 'bionotes-bookmarks';
-  function getBookmarks()  { try { return JSON.parse(localStorage.getItem(BKMARK_KEY) || '[]'); } catch { return []; } }
-  function saveBookmarks(a){ localStorage.setItem(BKMARK_KEY, JSON.stringify(a)); }
+  function getBookmarks() { try { return JSON.parse(localStorage.getItem(BKMARK_KEY) || '[]'); } catch { return []; } }
+  function saveBookmarks(a) { localStorage.setItem(BKMARK_KEY, JSON.stringify(a)); }
   function isBookmarked(f) { return getBookmarks().includes(f); }
   function toggleBookmark(file, btn) {
     let bk = getBookmarks();
@@ -24,7 +24,7 @@
       bk.push(file);
       btn.classList.add('active');
       btn.title = 'Bookmarked';
-      if (typeof gsap !== 'undefined') gsap.fromTo(btn, { scale:1 }, { scale:1.4, duration:0.15, yoyo:true, repeat:1, ease:'power2.out' });
+      if (typeof gsap !== 'undefined') gsap.fromTo(btn, { scale: 1 }, { scale: 1.4, duration: 0.15, yoyo: true, repeat: 1, ease: 'power2.out' });
     }
     saveBookmarks(bk);
   }
@@ -33,14 +33,14 @@
      DOWNLOAD TRACKER
   ════════════════════════════════ */
   const DL_KEY = 'bionotes-downloads';
-  function getDownloads()      { try { return JSON.parse(localStorage.getItem(DL_KEY)||'{}'); } catch { return {}; } }
-  function trackDownload(file) { const dl=getDownloads(); dl[file]=(dl[file]||0)+1; localStorage.setItem(DL_KEY,JSON.stringify(dl)); }
+  function getDownloads() { try { return JSON.parse(localStorage.getItem(DL_KEY) || '{}'); } catch { return {}; } }
+  function trackDownload(file) { const dl = getDownloads(); dl[file] = (dl[file] || 0) + 1; localStorage.setItem(DL_KEY, JSON.stringify(dl)); }
   function getDownloadCount(f) { return getDownloads()[f] || 0; }
 
   /* ════════════════════════════════
      HAMBURGER MENU
   ════════════════════════════════ */
-  const hamburger  = document.getElementById('navHamburger');
+  const hamburger = document.getElementById('navHamburger');
   const mobileMenu = document.getElementById('navMobileMenu');
   if (hamburger && mobileMenu) {
     hamburger.addEventListener('click', () => {
@@ -59,11 +59,11 @@
     document.querySelectorAll(selector).forEach(card => {
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
-        const dx   = (e.clientX - rect.left - rect.width/2)  / (rect.width/2);
-        const dy   = (e.clientY - rect.top  - rect.height/2) / (rect.height/2);
-        card.style.transform = `perspective(700px) rotateY(${dx*7}deg) rotateX(${-dy*7}deg) translateY(-8px) scale(1.02)`;
-        card.style.setProperty('--mx', ((e.clientX-rect.left)/rect.width*100).toFixed(1)+'%');
-        card.style.setProperty('--my', ((e.clientY-rect.top) /rect.height*100).toFixed(1)+'%');
+        const dx = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+        const dy = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+        card.style.transform = `perspective(700px) rotateY(${dx * 7}deg) rotateX(${-dy * 7}deg) translateY(-8px) scale(1.02)`;
+        card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100).toFixed(1) + '%');
       });
       card.addEventListener('mouseleave', () => { card.style.transform = ''; });
     });
@@ -73,10 +73,10 @@
      MODAL
   ════════════════════════════════ */
   const modalOverlay = document.getElementById('modalOverlay');
-  const modalTitle   = document.getElementById('modalTitle');
-  const modalMeta    = document.getElementById('modalMeta');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMeta = document.getElementById('modalMeta');
   const modalViewBtn = document.getElementById('modalViewBtn');
-  const modalDlBtn   = document.getElementById('modalDownloadBtn');
+  const modalDlBtn = document.getElementById('modalDownloadBtn');
 
   window.openModal = function (note, subjectData) {
     if (!modalOverlay) return;
@@ -93,7 +93,7 @@
       preview.innerHTML = `<div class="modal-preview-wrap"><iframe src="${encodeURI(note.file)}" loading="lazy" title="${note.title}"></iframe></div>`;
     }
     if (modalViewBtn) { modalViewBtn.href = note.file; modalViewBtn.setAttribute('target', '_blank'); }
-    if (modalDlBtn)   { modalDlBtn.href = note.file; modalDlBtn.setAttribute('download', note.file); modalDlBtn.onclick = () => trackDownload(note.file); }
+    if (modalDlBtn) { modalDlBtn.href = note.file; modalDlBtn.setAttribute('download', note.file); modalDlBtn.onclick = () => trackDownload(note.file); }
     modalOverlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   };
@@ -111,12 +111,12 @@
      BUILD NOTE CARD
   ════════════════════════════════ */
   function buildNoteCard(note, subjectData) {
-    const card       = document.createElement('div');
-    card.className   = 'note-card gsap-reveal';
+    const card = document.createElement('div');
+    card.className = 'note-card gsap-reveal';
     card.setAttribute('data-subject', note.subject);
     card.setAttribute('data-title', note.title.toLowerCase());
     card.setAttribute('data-type', note.type);
-    const dlCount    = getDownloadCount(note.file);
+    const dlCount = getDownloadCount(note.file);
     const bookmarked = isBookmarked(note.file);
 
     card.innerHTML = `
@@ -126,7 +126,7 @@
       </div>
       <div class="note-card-title">${note.title}</div>
       <div class="note-card-type">${note.type}</div>
-      ${dlCount > 0 ? `<div class="note-card-downloads">⬇ ${dlCount} download${dlCount>1?'s':''}</div>` : ''}
+      ${dlCount > 0 ? `<div class="note-card-downloads">⬇ ${dlCount} download${dlCount > 1 ? 's' : ''}</div>` : ''}
       <div class="note-card-actions">
         <button class="nca-btn nca-view">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -141,7 +141,7 @@
     `;
     card.querySelector('.nca-view').addEventListener('click', e => { e.stopPropagation(); window.openModal(note, subjectData); });
     card.querySelector('.nca-download').addEventListener('click', e => { e.stopPropagation(); trackDownload(note.file); });
-    card.querySelector('.nca-bookmark').addEventListener('click', function(e) { e.stopPropagation(); toggleBookmark(note.file, this); });
+    card.querySelector('.nca-bookmark').addEventListener('click', function (e) { e.stopPropagation(); toggleBookmark(note.file, this); });
     return card;
   }
 
@@ -149,22 +149,22 @@
      HOMEPAGE — SUBJECTS CAROUSEL
   ════════════════════════════════ */
   const carouselTrack = document.getElementById('subjectsCarouselTrack');
-  const carouselPrev  = document.getElementById('carouselPrev');
-  const carouselNext  = document.getElementById('carouselNext');
-  const carouselDots  = document.getElementById('carouselDots');
+  const carouselPrev = document.getElementById('carouselPrev');
+  const carouselNext = document.getElementById('carouselNext');
+  const carouselDots = document.getElementById('carouselDots');
 
   if (carouselTrack && typeof NOTES_DATA !== 'undefined') {
     let currentSlide = 0;
     const visibleSlides = () => window.innerWidth < 600 ? 1 : window.innerWidth < 900 ? 2 : window.innerWidth < 1200 ? 3 : 4;
-    const totalSlides   = NOTES_DATA.length;
+    const totalSlides = NOTES_DATA.length;
 
     /* Build carousel cards */
     NOTES_DATA.forEach((subject, i) => {
       const card = document.createElement('a');
-      card.className  = 'subject-card subject-card-carousel';
-      card.href       = `notes.html#${subject.code}`;
-      card.style.cssText = `--card-color:${subject.color};--card-rgb:${subject.rgb};min-width:calc((100% - ${(visibleSlides()-1)*1.5}rem) / ${visibleSlides()});flex-shrink:0`;
-      card.innerHTML  = `
+      card.className = 'subject-card subject-card-carousel';
+      card.href = `notes.html#${subject.code}`;
+      card.style.cssText = `--card-color:${subject.color};--card-rgb:${subject.rgb};min-width:calc((100% - ${(visibleSlides() - 1) * 1.5}rem) / ${visibleSlides()});flex-shrink:0`;
+      card.innerHTML = `
         <div class="subject-card-band"></div>
         <div class="subject-card-icon">${subject.icon}</div>
         <div class="subject-card-code">${subject.code}</div>
@@ -181,20 +181,20 @@
     const maxSlide = Math.max(0, totalSlides - visibleSlides());
     for (let i = 0; i <= maxSlide; i++) {
       const dot = document.createElement('button');
-      dot.className   = 'carousel-dot' + (i===0?' active':'');
-      dot.setAttribute('aria-label', `Slide ${i+1}`);
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Slide ${i + 1}`);
       dot.addEventListener('click', () => goTo(i));
       if (carouselDots) carouselDots.appendChild(dot);
     }
 
     function goTo(idx) {
       const vSlides = visibleSlides();
-      const max     = Math.max(0, totalSlides - vSlides);
-      currentSlide  = Math.max(0, Math.min(idx, max));
+      const max = Math.max(0, totalSlides - vSlides);
+      currentSlide = Math.max(0, Math.min(idx, max));
       const cardW = carouselTrack.children[0]?.offsetWidth || 0;
-      const gap   = 24;
+      const gap = 24;
       carouselTrack.style.transform = `translateX(-${currentSlide * (cardW + gap)}px)`;
-      carouselDots?.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i===currentSlide));
+      carouselDots?.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
     }
 
     carouselPrev?.addEventListener('click', () => goTo(currentSlide - 1));
@@ -225,12 +225,12 @@
 
     trending.forEach((note, i) => {
       const subj = note.subjectData || NOTES_DATA.find(s => s.code === note.subject) || {};
-      const dl   = getDownloadCount(note.file);
+      const dl = getDownloadCount(note.file);
       const card = document.createElement('div');
       card.className = 'trending-note-card gsap-reveal';
-      card.style.cssText = `--tn-color:${subj.color||'#00FFB2'};--tn-rgb:${subj.rgb||'0,255,178'}`;
+      card.style.cssText = `--tn-color:${subj.color || '#00FFB2'};--tn-rgb:${subj.rgb || '0,255,178'}`;
       card.innerHTML = `
-        <div class="trending-rank">#${i+1}</div>
+        <div class="trending-rank">#${i + 1}</div>
         <div class="hot-badge">🔥 Trending</div>
         <div class="trending-subject-badge">${subj.icon || ''} ${note.subject}</div>
         <div class="trending-title">${note.title}</div>
@@ -279,7 +279,7 @@
      HOMEPAGE — FAQ ACCORDION
   ════════════════════════════════ */
   document.querySelectorAll('.faq-item').forEach(item => {
-    const btn  = item.querySelector('.faq-q');
+    const btn = item.querySelector('.faq-q');
     if (!btn) return;
     btn.addEventListener('click', () => {
       const isOpen = item.classList.toggle('open');
@@ -302,13 +302,13 @@
      HOMEPAGE — TESTIMONIALS CAROUSEL
   ════════════════════════════════ */
   const testTrack = document.getElementById('testimonialsTrack');
-  const testPrev  = document.getElementById('testPrev');
-  const testNext  = document.getElementById('testNext');
-  const testDots  = document.getElementById('testDots');
+  const testPrev = document.getElementById('testPrev');
+  const testNext = document.getElementById('testNext');
+  const testDots = document.getElementById('testDots');
 
   if (testTrack) {
-    const cards     = testTrack.querySelectorAll('.testimonial-card');
-    let testSlide   = 0;
+    const cards = testTrack.querySelectorAll('.testimonial-card');
+    let testSlide = 0;
     const testVisible = () => window.innerWidth < 700 ? 1 : window.innerWidth < 900 ? 2 : 3;
 
     /* Build dots */
@@ -318,8 +318,8 @@
       testDots.innerHTML = '';
       for (let i = 0; i <= testMax(); i++) {
         const d = document.createElement('button');
-        d.className = 'carousel-dot' + (i===0?' active':'');
-        d.setAttribute('aria-label', `Slide ${i+1}`);
+        d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        d.setAttribute('aria-label', `Slide ${i + 1}`);
         d.addEventListener('click', () => goTest(i));
         testDots.appendChild(d);
       }
@@ -329,13 +329,13 @@
     function goTest(idx) {
       testSlide = Math.max(0, Math.min(idx, testMax()));
       const cardW = cards[0]?.offsetWidth || 0;
-      const gap   = 24;
+      const gap = 24;
       if (typeof gsap !== 'undefined') {
         gsap.to(testTrack, { x: -(testSlide * (cardW + gap)), duration: 0.5, ease: 'power2.out' });
       } else {
         testTrack.style.transform = `translateX(-${testSlide * (cardW + gap)}px)`;
       }
-      testDots?.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i===testSlide));
+      testDots?.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === testSlide));
     }
 
     testPrev?.addEventListener('click', () => goTest(testSlide - 1));
@@ -355,9 +355,9 @@
     NOTES_DATA.forEach((subject, i) => {
       const card = document.createElement('a');
       card.className = 'subject-card';
-      card.href      = `notes.html#${subject.code}`;
+      card.href = `notes.html#${subject.code}`;
       card.style.setProperty('--card-color', subject.color);
-      card.style.setProperty('--card-rgb',   subject.rgb);
+      card.style.setProperty('--card-rgb', subject.rgb);
       card.style.animationDelay = `${i * 0.08}s`;
       card.innerHTML = `
         <div class="subject-card-band"></div>
@@ -378,16 +378,16 @@
      NOTES PAGE
   ════════════════════════════════ */
   const subjectsListing = document.getElementById('subjectsListing');
-  const sidebarNav      = document.getElementById('sidebarNav');
-  const sidebar         = document.getElementById('sidebar');
-  const sidebarToggle   = document.getElementById('sidebarToggle');
-  const sidebarOpenBtn  = document.getElementById('sidebarOpenBtn');
-  const sbTotal         = document.getElementById('sbTotalNotes');
-  const sbSubjects      = document.getElementById('sbTotalSubjects');
+  const sidebarNav = document.getElementById('sidebarNav');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebarOpenBtn = document.getElementById('sidebarOpenBtn');
+  const sbTotal = document.getElementById('sbTotalNotes');
+  const sbSubjects = document.getElementById('sbTotalSubjects');
 
   if (subjectsListing && typeof NOTES_DATA !== 'undefined') {
     const allN = typeof getAllNotes !== 'undefined' ? getAllNotes() : [];
-    if (sbTotal)    sbTotal.textContent    = allN.length;
+    if (sbTotal) sbTotal.textContent = allN.length;
     if (sbSubjects) sbSubjects.textContent = NOTES_DATA.length;
 
     /* Sidebar */
@@ -411,7 +411,7 @@
         notesList.className = 'sb-notes';
         subject.notes.forEach(note => {
           const link = document.createElement('button');
-          link.className   = 'sb-note-link';
+          link.className = 'sb-note-link';
           link.textContent = note.title.substring(0, 48);
           link.addEventListener('click', () => {
             window.openModal(note, subject);
@@ -422,7 +422,7 @@
         btn.addEventListener('click', () => {
           const isOpen = btn.classList.toggle('open');
           notesList.classList.toggle('open', isOpen);
-          document.getElementById(`section-${subject.code}`)?.scrollIntoView({ behavior:'smooth', block:'start' });
+          document.getElementById(`section-${subject.code}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
         group.appendChild(btn);
         group.appendChild(notesList);
@@ -431,19 +431,19 @@
     }
 
     /* Mobile sidebar toggles */
-    sidebarToggle?.addEventListener('click',  () => sidebar?.classList.remove('open'));
+    sidebarToggle?.addEventListener('click', () => sidebar?.classList.remove('open'));
     sidebarOpenBtn?.addEventListener('click', () => sidebar?.classList.add('open'));
     document.addEventListener('click', e => {
       if (sidebar && window.innerWidth < 900 &&
-          !sidebar.contains(e.target) &&
-          sidebarOpenBtn && !sidebarOpenBtn.contains(e.target)) sidebar.classList.remove('open');
+        !sidebar.contains(e.target) &&
+        sidebarOpenBtn && !sidebarOpenBtn.contains(e.target)) sidebar.classList.remove('open');
     });
 
     /* Main content: subject sections */
     NOTES_DATA.forEach(subject => {
       const section = document.createElement('div');
       section.className = 'subject-section';
-      section.id        = `section-${subject.code}`;
+      section.id = `section-${subject.code}`;
 
       const header = document.createElement('div');
       header.className = 'subject-section-header open';
@@ -480,8 +480,8 @@
     setTimeout(() => enableTilt('.note-card'), 200);
 
     /* Scroll to hash */
-    const hash = window.location.hash.replace('#','');
-    if (hash) setTimeout(() => document.getElementById(`section-${hash}`)?.scrollIntoView({ behavior:'smooth', block:'start' }), 400);
+    const hash = window.location.hash.replace('#', '');
+    if (hash) setTimeout(() => document.getElementById(`section-${hash}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 400);
   }
 
   /* ════════════════════════════════
@@ -516,7 +516,7 @@
       });
     }, { threshold: 0.08 });
     document.querySelectorAll('.gsap-reveal, .step-card, .subject-card, .feature-card, .semester-card').forEach(el => {
-      el.style.opacity  = '0';
+      el.style.opacity = '0';
       el.style.transform = 'translateY(40px)';
       el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
       obs.observe(el);
