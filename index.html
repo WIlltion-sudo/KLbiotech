@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LZXC18DTZ4"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
-
     gtag('config', 'G-LZXC18DTZ4');
   </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BioNotes | Immersive B.Tech Biotechnology Learning Hub</title>
-  <meta name="description" content="Next-generation B.Tech Biotechnology notes platform. Semester-wise, subject-wise organized notes with 3D animations, smart search, and instant downloads." />
+  <meta name="description"
+    content="Next-generation B.Tech Biotechnology notes platform. Semester-wise, subject-wise organized notes with 3D animations, smart search, and instant downloads." />
   <meta name="theme-color" content="#00FFB2" />
   <link rel="manifest" href="manifest.json" />
 
@@ -26,7 +27,9 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="assets/css/global.css" />
@@ -35,19 +38,625 @@
   <link rel="stylesheet" href="assets/css/cards.css" />
   <link rel="stylesheet" href="assets/css/homepage.css" />
 
+  <!-- n8n Chat Widget -->
+  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════════════════
+       n8n Chat — BioNotes Theme Override
+    ═══════════════════════════════════════════════════ */
+    :root {
+      --chat--color-primary: #00FFB2;
+      --chat--color-primary-shade-50: rgba(0, 255, 178, 0.08);
+      --chat--color-primary-shade-100: rgba(0, 255, 178, 0.16);
+      --chat--color-secondary: #00D9FF;
+      --chat--color-secondary-shade-50: rgba(0, 217, 255, 0.08);
+      --chat--color-white: #E8E8E8;
+      --chat--color-light: #0d0d1a;
+      --chat--color-light-shade-50: #111122;
+      --chat--color-light-shade-100: #16162a;
+      --chat--color-medium: rgba(255, 255, 255, 0.07);
+      --chat--color-dark: #E8E8E8;
+      --chat--color-disabled: #555;
+      --chat--color-typing: #00FFB2;
+      --chat--border-radius: 14px;
+      --chat--message--bot--background: rgba(0, 255, 178, 0.06);
+      --chat--message--bot--border: 1px solid rgba(0, 255, 178, 0.15);
+      --chat--message--bot--color: #E8E8E8;
+      --chat--message--user--background: #00FFB2;
+      --chat--message--user--color: #000000;
+      --chat--message--font-size: 0.9rem;
+      --chat--input--background: #0d0d1a;
+      --chat--input--border: 1px solid rgba(0,255,178,0.2);
+      --chat--input--border-active: 1px solid rgba(0,255,178,0.6);
+      --chat--input--placeholder--color: rgba(255,255,255,0.25);
+      --chat--input--text-color: #E8E8E8;
+      --chat--header--background: linear-gradient(135deg, #0a0a18, #0f0f22);
+      --chat--header--color: #E8E8E8;
+      --chat--toggle--background: linear-gradient(135deg, #00FFB2, #00D9FF);
+      --chat--toggle--hover--background: linear-gradient(135deg, #00D9FF, #7B61FF);
+      --chat--toggle--active--background: linear-gradient(135deg, #00D9FF, #7B61FF);
+      --chat--toggle--color: #000;
+      --chat--toggle--size: 56px;
+      --chat--window--background: #080810;
+      --chat--window--border: 1px solid rgba(0, 255, 178, 0.2);
+      --chat--window--box-shadow: 0 0 60px rgba(0, 255, 178, 0.15), 0 30px 80px rgba(0, 0, 0, 0.8);
+    }
+
+    [data-theme="light"] {
+      --chat--color-primary: #00b87a;
+      --chat--color-primary-shade-50: rgba(0, 180, 130, 0.08);
+      --chat--color-light: #f0f4ff;
+      --chat--color-light-shade-50: #e8eeff;
+      --chat--color-dark: #1a1a2e;
+      --chat--message--bot--background: rgba(0, 180, 130, 0.08);
+      --chat--message--bot--border: 1px solid rgba(0, 180, 130, 0.2);
+      --chat--message--bot--color: #1a1a2e;
+      --chat--message--user--background: linear-gradient(135deg, #00b87a, #00a8cc);
+      --chat--message--user--color: #ffffff;
+      --chat--input--background: rgba(255, 255, 255, 0.9);
+      --chat--input--border: 1px solid rgba(0, 0, 0, 0.1);
+      --chat--input--text-color: #1a1a2e;
+      --chat--header--background: linear-gradient(135deg, #f0f4ff, #e8eeff);
+      --chat--header--color: #1a1a2e;
+      --chat--window--background: #f5f7ff;
+      --chat--window--border: 1px solid rgba(0, 180, 130, 0.25);
+    }
+
+    /* ════════════════════════════════════════════════════
+       FIX: User message text — covers ALL n8n class variants
+    ════════════════════════════════════════════════════ */
+
+    /* Layer 1 — CSS custom property (n8n standard) */
+    :root {
+      --chat--message--user--color: #000000;
+    }
+
+    /* Layer 2 — Target every known n8n user-message class pattern */
+    /* n8n v0.x */
+    .n8n-chat .chat-message.chat-message-from-user .chat-message-bubble,
+    .n8n-chat .chat-message.chat-message-from-user .chat-message-bubble *,
+    /* n8n v1.x */
+    .n8n-chat [class*='from-user'] [class*='bubble'],
+    .n8n-chat [class*='from-user'] [class*='bubble'] *,
+    /* n8n v2.x / latest */
+    .n8n-chat .chat-message-from-user .chat-message-bubble,
+    .n8n-chat .chat-message-from-user .chat-message-bubble p,
+    .n8n-chat .chat-message-from-user .chat-message-bubble span,
+    .n8n-chat .chat-message-from-user .chat-message-bubble *,
+    /* attribute-based fallback */
+    .n8n-chat [data-user-message] *,
+    /* generic: any bubble that is a sibling of user indicators */
+    .n8n-chat .chat-message:has(.chat-message-text-user) .chat-message-bubble,
+    .n8n-chat .chat-message:has(.chat-message-text-user) .chat-message-bubble * {
+      color: #000000 !important;
+      -webkit-text-fill-color: #000000 !important;
+      opacity: 1 !important;
+    }
+
+    /* Force background + text on ALL user bubble variants */
+    .n8n-chat .chat-message.chat-message-from-user .chat-message-bubble,
+    .n8n-chat [class*='from-user'] [class*='bubble'],
+    .n8n-chat .chat-message-from-user .chat-message-bubble {
+      background: linear-gradient(135deg, #00FFB2, #00D9FF) !important;
+      background-color: #00FFB2 !important;
+      border: none !important;
+      color: #000000 !important;
+      -webkit-text-fill-color: #000000 !important;
+    }
+
+    /* Bot message styling */
+    .n8n-chat .chat-message-from-bot .chat-message-bubble,
+    .n8n-chat .chat-message.chat-message-from-bot .chat-message-bubble,
+    .n8n-chat [class*='from-bot'] [class*='bubble'] {
+      background: rgba(0, 255, 178, 0.07) !important;
+      border: 1px solid rgba(0, 255, 178, 0.18) !important;
+      color: #E8E8E8 !important;
+    }
+
+    .n8n-chat .chat-message-from-bot .chat-message-bubble *,
+    .n8n-chat [class*='from-bot'] [class*='bubble'] * {
+      color: #E8E8E8 !important;
+    }
+
+    /* Input field — dark background + visible text */
+    .n8n-chat .chat-input,
+    .n8n-chat [class*='chat-input'],
+    .n8n-chat [class*='input-wrapper'],
+    .n8n-chat [class*='chat-footer'],
+    .n8n-chat [class*='chat-footer'] > div {
+      background: #0d0d1a !important;
+      background-color: #0d0d1a !important;
+    }
+    .n8n-chat .chat-input textarea,
+    .n8n-chat .chat-input input,
+    .n8n-chat textarea,
+    .n8n-chat [class*='chat-input'] textarea,
+    .n8n-chat [class*='chat-input'] input,
+    .n8n-chat [class*='input'] textarea,
+    .n8n-chat [class*='input'] input {
+      background:       #0d0d1a !important;
+      background-color: #0d0d1a !important;
+      color: #E8E8E8 !important;
+      -webkit-text-fill-color: #E8E8E8 !important;
+      caret-color: #00FFB2 !important;
+      border-color: rgba(0,255,178,0.2) !important;
+    }
+    .n8n-chat .chat-input textarea:focus,
+    .n8n-chat [class*='chat-input'] textarea:focus,
+    .n8n-chat textarea:focus {
+      border-color: rgba(0,255,178,0.6) !important;
+      box-shadow: 0 0 0 2px rgba(0,255,178,0.1) !important;
+      outline: none !important;
+    }
+
+    /* Toggle button glow pulse */
+    .n8n-chat .chat-toggle {
+      box-shadow: 0 0 0 0 rgba(0, 255, 178, 0.45);
+      animation: chatGlow 2.5s infinite;
+    }
+
+    @keyframes chatGlow {
+      0% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 178, 0.45);
+      }
+
+      70% {
+        box-shadow: 0 0 0 16px rgba(0, 255, 178, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 178, 0);
+      }
+    }
+
+    /* Window glass effect */
+    .n8n-chat .chat-window {
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 20px !important;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       AI TUTOR SECTION — Full Page Layout
+    ═══════════════════════════════════════════════════ */
+    .ai-tutor-section {
+      min-height: 100vh;
+      padding: 0;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ai-tutor-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 20%, rgba(0, 255, 178, 0.05) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 80% 80%, rgba(123, 97, 255, 0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .ai-tutor-section::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 255, 178, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 178, 0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 80%);
+    }
+
+    .ai-tutor-top {
+      padding: 5rem 2rem 1.5rem;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .ai-tutor-caps-strip {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding: 0 2rem 1.75rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .ai-cap-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: 99px;
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      color: var(--clr-text-dim);
+      font-family: var(--font-head);
+      letter-spacing: 0.04em;
+      transition: all var(--trans-normal);
+      white-space: nowrap;
+    }
+
+    .ai-cap-pill:hover {
+      border-color: var(--clr-border-hi);
+      color: var(--clr-primary);
+      background: var(--clr-surface-2);
+      transform: translateY(-2px);
+      box-shadow: 0 0 16px rgba(0, 255, 178, 0.1);
+    }
+
+    .ai-cap-pill-icon {
+      font-size: 0.95rem;
+    }
+
+    .ai-tutor-chat-area {
+      flex: 1;
+      display: flex;
+      padding: 0 2rem 3rem;
+      gap: 1.5rem;
+      position: relative;
+      z-index: 2;
+      max-width: 1360px;
+      margin: 0 auto;
+      width: 100%;
+      align-items: stretch;
+      box-sizing: border-box;
+    }
+
+    /* Embedded chat frame */
+    .ai-chat-frame {
+      flex: 1;
+      background: #080810;
+      border: 1px solid rgba(0,255,178,0.2);
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 60px rgba(0,255,178,0.1), 0 0 120px rgba(0,0,0,0.8), inset 0 0 80px rgba(0,255,178,0.02);
+      display: flex;
+      flex-direction: column;
+      min-height: 560px;
+    }
+
+    .ai-chat-frame::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00FFB2 30%, #00D9FF 70%, transparent);
+      z-index: 10;
+    }
+
+    /* Browser chrome bar */
+    .ai-chat-chrome {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.9rem 1.25rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--clr-border);
+      flex-shrink: 0;
+    }
+
+    .chrome-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .chrome-dot-r {
+      background: #ff5f57;
+    }
+
+    .chrome-dot-y {
+      background: #febc2e;
+    }
+
+    .chrome-dot-g {
+      background: #28c840;
+    }
+
+    .chrome-label {
+      margin-left: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.63rem;
+      color: var(--clr-text-mute);
+      letter-spacing: 0.08em;
+    }
+
+    .chrome-status {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--clr-primary);
+      letter-spacing: 0.06em;
+    }
+
+    .chrome-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--clr-primary);
+      box-shadow: 0 0 6px var(--clr-primary);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    /* Chat messages body */
+    .ai-chat-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+      gap: 1.1rem;
+      overflow-y: auto;
+      position: relative;
+      background: #080810;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,255,178,0.2) transparent;
+    }
+    .ai-chat-body::-webkit-scrollbar { width: 3px; }
+    .ai-chat-body::-webkit-scrollbar-thumb { background: rgba(0,255,178,0.2); border-radius: 99px; }
+    /* Particle canvas inside chat body */
+    .ai-chat-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .ai-msg { position: relative; z-index: 1; }
+
+    .ai-msg {
+      display: flex;
+      gap: 0.7rem;
+      align-items: flex-end;
+      animation: fadeInUp 0.5s ease both;
+    }
+
+    .ai-msg.user {
+      flex-direction: row-reverse;
+    }
+
+    .ai-msg-bubble {
+      padding: 0.9rem 1.15rem;
+      border-radius: 18px;
+      font-size: 0.86rem;
+      line-height: 1.7;
+      max-width: 78%;
+      word-break: break-word;
+    }
+
+    .ai-msg.bot .ai-msg-bubble {
+      background: rgba(0, 20, 16, 0.85);
+      border: 1px solid rgba(0,255,178,0.22);
+      color: #d8f5ed;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+    }
+
+    .ai-msg.user .ai-msg-bubble {
+      background: #00FFB2;
+      color: #000000;
+      font-weight: 600;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 20px rgba(0,255,178,0.35);
+    }
+
+    .ai-msg-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .ai-msg.bot .ai-msg-avatar {
+      background: linear-gradient(135deg, rgba(0,255,178,0.25), rgba(123,97,255,0.3));
+      border: 1px solid rgba(0,255,178,0.3);
+      box-shadow: 0 0 12px rgba(0,255,178,0.2);
+    }
+
+    .ai-msg.user .ai-msg-avatar {
+      background: rgba(123,97,255,0.25);
+      border: 1px solid rgba(123,97,255,0.4);
+      box-shadow: 0 0 12px rgba(123,97,255,0.2);
+    }
+
+    /* Input bar */
+    .ai-chat-input-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 1.25rem;
+      border-top: 1px solid rgba(0,255,178,0.12);
+      background: #080810;
+      flex-shrink: 0;
+    }
+
+    .ai-chat-input-fake {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(0,255,178,0.15);
+      border-radius: 99px;
+      padding: 0.7rem 1.4rem;
+      font-size: 0.83rem;
+      color: rgba(255,255,255,0.3);
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all var(--trans-normal);
+      user-select: none;
+      letter-spacing: 0.01em;
+    }
+
+    .ai-chat-input-fake:hover {
+      border-color: rgba(0,255,178,0.35);
+      color: rgba(255,255,255,0.55);
+      background: rgba(0,255,178,0.03);
+    }
+
+    .ai-send-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00FFB2, #00D9FF);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all var(--trans-spring);
+      box-shadow: 0 0 20px rgba(0,255,178,0.4);
+      border: none;
+      color: #000;
+    }
+
+    .ai-send-btn:hover {
+      transform: scale(1.12);
+      box-shadow: 0 0 30px rgba(0,255,178,0.6);
+    }
+
+    /* Right info sidebar */
+    .ai-info-panel {
+      width: 290px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .ai-info-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 1.15rem 1.25rem;
+      transition: all var(--trans-normal);
+    }
+
+    .ai-info-card:hover {
+      border-color: var(--clr-border-hi);
+      background: var(--clr-surface-2);
+      transform: translateX(-3px);
+      box-shadow: 0 0 20px rgba(0, 255, 178, 0.07);
+    }
+
+    .ai-info-card-icon {
+      font-size: 1.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .ai-info-card h4 {
+      font-family: var(--font-head);
+      font-size: 0.77rem;
+      color: var(--clr-text);
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.04em;
+    }
+
+    .ai-info-card p {
+      font-size: 0.74rem;
+      color: var(--clr-text-dim);
+      line-height: 1.6;
+    }
+
+    .ai-open-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.9rem 1rem;
+      background: linear-gradient(135deg, #00FFB2, #00D9FF);
+      color: #000;
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all var(--trans-spring);
+      margin-top: auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ai-open-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--glow-green), 0 12px 30px rgba(0, 255, 178, 0.3);
+    }
+
+    @media (max-width: 1024px) {
+      .ai-info-panel {
+        width: 250px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .ai-tutor-chat-area {
+        flex-direction: column;
+        padding: 0 1rem 2rem;
+      }
+
+      .ai-info-panel {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .ai-info-card {
+        flex: 1;
+        min-width: 180px;
+      }
+
+      .ai-open-btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .ai-info-panel {
+        flex-direction: column;
+      }
+
+      .ai-tutor-caps-strip {
+        gap: 0.5rem;
+      }
+    }
+  </style>
+
   <!-- CDN Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
+
 <body>
 
   <!-- PRELOADER -->
   <div id="preloader">
     <div class="preloader-logo">BIONOTES</div>
-    <div class="preloader-dna"><div class="preloader-dna-dot"></div></div>
+    <div class="preloader-dna">
+      <div class="preloader-dna-dot"></div>
+    </div>
     <div class="preloader-text">Initializing sequences…</div>
-    <div class="preloader-bar-wrap"><div class="preloader-bar"></div></div>
+    <div class="preloader-bar-wrap">
+      <div class="preloader-bar"></div>
+    </div>
   </div>
 
   <!-- SCROLL PROGRESS -->
@@ -67,7 +676,7 @@
   <canvas id="dnaCanvas" class="dna-canvas"></canvas>
   <div class="hero-particles" id="heroParticles"></div>
 
-  <!-- ════════ NAV (no admin link) ════════ -->
+  <!-- ════════ NAV ════════ -->
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <a href="index.html" class="nav-logo">
@@ -75,7 +684,7 @@
         <span class="logo-text">BioNotes</span>
       </a>
 
-      <!-- GooeyNav replaces the plain link list -->
+      <!-- GooeyNav -->
       <div id="gooeyNavContainer" class="gooey-nav-wrapper" style="display:flex;align-items:center;"></div>
 
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
@@ -87,9 +696,10 @@
       </button>
     </div>
     <div class="nav-mobile-menu" id="navMobileMenu">
-      <a href="index.html"  class="mobile-link">Home</a>
-      <a href="notes.html"  class="mobile-link">Notes</a>
+      <a href="index.html" class="mobile-link">Home</a>
+      <a href="notes.html" class="mobile-link">Notes</a>
       <a href="search.html" class="mobile-link">Search</a>
+      <a href="#aiTutorSection" class="mobile-link">AI Tutor</a>
     </div>
   </nav>
 
@@ -120,19 +730,25 @@
         <a href="notes.html" class="btn-primary" id="exploreBtn">
           <span class="btn-glow"></span>
           Browse All Notes
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
         </a>
         <a href="search.html" class="btn-ghost">🔍 Search Topics</a>
       </div>
 
       <div class="hero-stats">
-        <div class="stat"><span class="stat-num" id="heroStatSubjects">4</span><span class="stat-label">Subjects</span></div>
+        <div class="stat"><span class="stat-num" id="heroStatSubjects">4</span><span class="stat-label">Subjects</span>
+        </div>
         <div class="stat-divider"></div>
         <div class="stat"><span class="stat-num" id="heroStatNotes">18</span><span class="stat-label">Notes</span></div>
         <div class="stat-divider"></div>
-        <div class="stat"><span class="stat-num" id="heroStatCO">8</span><span class="stat-label">Course Outcomes</span></div>
+        <div class="stat"><span class="stat-num" id="heroStatCO">8</span><span class="stat-label">Course Outcomes</span>
+        </div>
         <div class="stat-divider"></div>
-        <div class="stat"><span class="stat-num" id="heroStatFree">100</span><span class="stat-label">% Free</span></div>
+        <div class="stat"><span class="stat-num" id="heroStatFree">100</span><span class="stat-label">% Free</span>
+        </div>
       </div>
     </div>
 
@@ -148,7 +764,6 @@
   <div class="stats-ticker" aria-hidden="true">
     <div class="ticker-wrap">
       <div class="ticker-track" id="tickerTrack">
-        <!-- Items duplicated in JS for infinite loop -->
         <span class="ticker-item">🧬 Biochemical Thermodynamics</span>
         <span class="ticker-sep"></span>
         <span class="ticker-item">⚗️ Engineering Chemistry</span>
@@ -196,7 +811,8 @@
         <div class="feature-num">01</div>
         <span class="feature-icon">🧬</span>
         <h3 class="feature-title">Structured Notes</h3>
-        <p class="feature-desc">Semester-wise and subject-wise organized notes mapped to specific Course Outcomes. No more hunting through files.</p>
+        <p class="feature-desc">Semester-wise and subject-wise organized notes mapped to specific Course Outcomes. No
+          more hunting through files.</p>
         <div class="feature-accent">01</div>
       </div>
 
@@ -204,7 +820,8 @@
         <div class="feature-num">02</div>
         <span class="feature-icon">🔍</span>
         <h3 class="feature-title">Smart Fuzzy Search</h3>
-        <p class="feature-desc">Find any topic across all subjects instantly. Tolerant matching for typos, abbreviations, and partial words.</p>
+        <p class="feature-desc">Find any topic across all subjects instantly. Tolerant matching for typos,
+          abbreviations, and partial words.</p>
         <div class="feature-accent">02</div>
       </div>
 
@@ -212,7 +829,8 @@
         <div class="feature-num">03</div>
         <span class="feature-icon">⚡</span>
         <h3 class="feature-title">Instant Download</h3>
-        <p class="feature-desc">Download any note as PDF with one click. Bookmark your favorites for quick revisit. All stored locally.</p>
+        <p class="feature-desc">Download any note as PDF with one click. Bookmark your favorites for quick revisit. All
+          stored locally.</p>
         <div class="feature-accent">03</div>
       </div>
 
@@ -352,88 +970,61 @@
         <div class="sem-num">01</div>
         <div class="sem-label">Semester 1</div>
         <div class="sem-subjects">
-          🧬 Biochemical Thermodynamics<br/>
-          ⚗️ Engineering Chemistry<br/>
-          📐 Linear Algebra &amp; Calculus<br/>
+          🧬 Biochemical Thermodynamics<br />
+          ⚗️ Engineering Chemistry<br />
+          📐 Linear Algebra &amp; Calculus<br />
           🌐 Data Structures
         </div>
         <div class="sem-status live">● Available Now — 18 Notes</div>
       </div>
 
-      <!-- SEMESTER 2 — COMING -->
       <div class="semester-card coming-soon gsap-reveal">
         <div class="sem-num">02</div>
         <div class="sem-label">Semester 2</div>
-        <div class="sem-subjects">
-          Microbiology<br/>Biophysics<br/>
-          Organic Chemistry<br/>Biostatistics
-        </div>
+        <div class="sem-subjects">Microbiology<br />Biophysics<br />Organic Chemistry<br />Biostatistics</div>
         <div class="sem-status soon">○ Coming Soon</div>
       </div>
 
-      <!-- SEMESTER 3 -->
       <div class="semester-card coming-soon gsap-reveal">
         <div class="sem-num">03</div>
         <div class="sem-label">Semester 3</div>
-        <div class="sem-subjects">
-          Genetics<br/>Plant Biotechnology<br/>
-          Molecular Biology<br/>Immunology
-        </div>
+        <div class="sem-subjects">Genetics<br />Plant Biotechnology<br />Molecular Biology<br />Immunology</div>
         <div class="sem-status soon">○ Coming Soon</div>
       </div>
 
-      <!-- SEMESTER 4 -->
       <div class="semester-card coming-soon gsap-reveal">
         <div class="sem-num">04</div>
         <div class="sem-label">Semester 4</div>
-        <div class="sem-subjects">
-          Enzyme Technology<br/>Bioprocess Engg.<br/>
-          Cell Biology<br/>Bioinformatics
-        </div>
+        <div class="sem-subjects">Enzyme Technology<br />Bioprocess Engg.<br />Cell Biology<br />Bioinformatics</div>
         <div class="sem-status soon">○ Coming Soon</div>
       </div>
 
-      <!-- SEMESTER 5 -->
       <div class="semester-card coming-soon gsap-reveal">
         <div class="sem-num">05</div>
         <div class="sem-label">Semester 5</div>
-        <div class="sem-subjects">
-          Recombinant DNA<br/>Fermentation Tech.<br/>
-          Industrial Biotech<br/>Downstream Processing
-        </div>
+        <div class="sem-subjects">Recombinant DNA<br />Fermentation Tech.<br />Industrial Biotech<br />Downstream
+          Processing</div>
         <div class="sem-status soon">○ Coming Soon</div>
       </div>
 
-      <!-- SEMESTER 6 -->
       <div class="semester-card coming-soon gsap-reveal">
         <div class="sem-num">06</div>
         <div class="sem-label">Semester 6</div>
-        <div class="sem-subjects">
-          Environmental Biotech<br/>Medical Biotech<br/>
-          Genomics<br/>Proteomics
-        </div>
+        <div class="sem-subjects">Environmental Biotech<br />Medical Biotech<br />Genomics<br />Proteomics</div>
         <div class="sem-status soon">○ Coming Soon</div>
       </div>
 
-      <!-- SEMESTER 7 -->
       <div class="semester-card coming-soon gsap-reveal">
         <div class="sem-num">07</div>
         <div class="sem-label">Semester 7</div>
-        <div class="sem-subjects">
-          Nanotechnology<br/>Biosecurity<br/>
-          IPR &amp; Patents<br/>Project Work
-        </div>
+        <div class="sem-subjects">Nanotechnology<br />Biosecurity<br />IPR &amp; Patents<br />Project Work</div>
         <div class="sem-status soon">○ Coming Soon</div>
       </div>
 
-      <!-- SEMESTER 8 -->
       <div class="semester-card coming-soon gsap-reveal">
         <div class="sem-num">08</div>
         <div class="sem-label">Semester 8</div>
-        <div class="sem-subjects">
-          Final Project<br/>Thesis Writing<br/>
-          Elective Specialisation<br/>Internship
-        </div>
+        <div class="sem-subjects">Final Project<br />Thesis Writing<br />Elective Specialisation<br />Internship</div>
         <div class="sem-status soon">○ Coming Soon</div>
       </div>
     </div>
@@ -456,7 +1047,8 @@
           <div class="testimonial-card">
             <div class="stars">★★★★★</div>
             <span class="quote-mark">"</span>
-            <p class="testimonial-text">The CO-wise breakdown of BCT notes saved my exam week. Everything is so neatly categorized — I found exactly what I needed in seconds instead of digging through folders.</p>
+            <p class="testimonial-text">The CO-wise breakdown of BCT notes saved my exam week. Everything is so neatly
+              categorized — I found exactly what I needed in seconds instead of digging through folders.</p>
             <div class="testimonial-author">
               <div class="author-avatar">PS</div>
               <div>
@@ -469,7 +1061,9 @@
           <div class="testimonial-card">
             <div class="stars">★★★★★</div>
             <span class="quote-mark">"</span>
-            <p class="testimonial-text">The fuzzy search is incredible. I typed "thermo" and got all thermodynamics notes instantly. The whole site feels super fast and the dark theme makes long study sessions much easier on the eyes.</p>
+            <p class="testimonial-text">The fuzzy search is incredible. I typed "thermo" and got all thermodynamics
+              notes instantly. The whole site feels super fast and the dark theme makes long study sessions much easier
+              on the eyes.</p>
             <div class="testimonial-author">
               <div class="author-avatar">RV</div>
               <div>
@@ -482,7 +1076,9 @@
           <div class="testimonial-card">
             <div class="stars">★★★★★</div>
             <span class="quote-mark">"</span>
-            <p class="testimonial-text">I love how clean and distraction-free the reading interface is. The inline PDF viewer means I don't have to leave the page. This platform feels premium — like it was made professionally.</p>
+            <p class="testimonial-text">I love how clean and distraction-free the reading interface is. The inline PDF
+              viewer means I don't have to leave the page. This platform feels premium — like it was made
+              professionally.</p>
             <div class="testimonial-author">
               <div class="author-avatar">AS</div>
               <div>
@@ -495,7 +1091,8 @@
           <div class="testimonial-card">
             <div class="stars">★★★★★</div>
             <span class="quote-mark">"</span>
-            <p class="testimonial-text">LACE notes are comprehensive and perfectly organized by CO numbers. The bookmark feature helps me track what I've revised. Genuinely one of the best academic tools I've used.</p>
+            <p class="testimonial-text">LACE notes are comprehensive and perfectly organized by CO numbers. The bookmark
+              feature helps me track what I've revised. Genuinely one of the best academic tools I've used.</p>
             <div class="testimonial-author">
               <div class="author-avatar">AK</div>
               <div>
@@ -508,7 +1105,9 @@
           <div class="testimonial-card">
             <div class="stars">★★★★★</div>
             <span class="quote-mark">"</span>
-            <p class="testimonial-text">The 3D animations on the homepage are amazing — it actually makes studying feel exciting. But more importantly, the Chem notes are detailed and very exam-relevant. Great platform overall!</p>
+            <p class="testimonial-text">The 3D animations on the homepage are amazing — it actually makes studying feel
+              exciting. But more importantly, the Chem notes are detailed and very exam-relevant. Great platform
+              overall!</p>
             <div class="testimonial-author">
               <div class="author-avatar">NM</div>
               <div>
@@ -546,7 +1145,8 @@
           <span class="faq-chevron">▾</span>
         </button>
         <div class="faq-body">
-          <p class="faq-a">Yes, 100%. BioNotes is completely free — no login, no paywall, no subscription. All notes are freely downloadable for every B.Tech Biotechnology student.</p>
+          <p class="faq-a">Yes, 100%. BioNotes is completely free — no login, no paywall, no subscription. All notes are
+            freely downloadable for every B.Tech Biotechnology student.</p>
         </div>
       </div>
 
@@ -556,7 +1156,9 @@
           <span class="faq-chevron">▾</span>
         </button>
         <div class="faq-body">
-          <p class="faq-a">Currently Semester 1 notes are available, covering 4 subjects: Biochemical Thermodynamics (BCT), Engineering Chemistry (Chem), Linear Algebra & Calculus (LACE), and Data Structures (DS). More semesters are coming soon.</p>
+          <p class="faq-a">Currently Semester 1 notes are available, covering 4 subjects: Biochemical Thermodynamics
+            (BCT), Engineering Chemistry (Chem), Linear Algebra &amp; Calculus (LACE), and Data Structures (DS). More
+            semesters are coming soon.</p>
         </div>
       </div>
 
@@ -566,7 +1168,9 @@
           <span class="faq-chevron">▾</span>
         </button>
         <div class="faq-body">
-          <p class="faq-a">Notes are organized by Subject → Course Outcome (CO) number. Each note is tagged with the subject code, CO number, and type (Full Notes, Combined, Practice Problems, etc.). This maps directly to the KL University curriculum.</p>
+          <p class="faq-a">Notes are organized by Subject → Course Outcome (CO) number. Each note is tagged with the
+            subject code, CO number, and type (Full Notes, Combined, Practice Problems, etc.). This maps directly to the
+            KL University curriculum.</p>
         </div>
       </div>
 
@@ -576,7 +1180,8 @@
           <span class="faq-chevron">▾</span>
         </button>
         <div class="faq-body">
-          <p class="faq-a">Absolutely. Click the Download button on any note to save the PDF to your device. The platform also works as a Progressive Web App (PWA) — install it to access cached notes offline.</p>
+          <p class="faq-a">Absolutely. Click the Download button on any note to save the PDF to your device. The
+            platform also works as a Progressive Web App (PWA) — install it to access cached notes offline.</p>
         </div>
       </div>
 
@@ -586,7 +1191,8 @@
           <span class="faq-chevron">▾</span>
         </button>
         <div class="faq-body">
-          <p class="faq-a">Click the 🔖 bookmark icon on any note card to save it. Bookmarks are stored in your browser's localStorage, so they persist across sessions on the same device — no account needed.</p>
+          <p class="faq-a">Click the 🔖 bookmark icon on any note card to save it. Bookmarks are stored in your
+            browser's localStorage, so they persist across sessions on the same device — no account needed.</p>
         </div>
       </div>
 
@@ -596,7 +1202,9 @@
           <span class="faq-chevron">▾</span>
         </button>
         <div class="faq-body">
-          <p class="faq-a">Future semesters will cover Microbiology, Genetics, Molecular Biology, Plant Biotechnology, Enzyme Technology, Bioprocess Engineering, Recombinant DNA Technology, Bioinformatics, and much more — all the core B.Tech Biotechnology subjects.</p>
+          <p class="faq-a">Future semesters will cover Microbiology, Genetics, Molecular Biology, Plant Biotechnology,
+            Enzyme Technology, Bioprocess Engineering, Recombinant DNA Technology, Bioinformatics, and much more — all
+            the core B.Tech Biotechnology subjects.</p>
         </div>
       </div>
 
@@ -604,7 +1212,116 @@
   </section>
 
   <!-- ════════════════════════════════════════
-       SECTION 11 — CTA BANNER
+       SECTION 11 — AI TUTOR (Full Page)
+  ════════════════════════════════════════ -->
+  <section class="ai-tutor-section" id="aiTutorSection">
+
+    <!-- Top header -->
+    <div class="ai-tutor-top gsap-reveal">
+      <div class="section-tag">AI POWERED</div>
+      <h2 class="section-title" style="margin-bottom:0.5rem">Your Personal <span class="gradient-text">AI Tutor</span>
+      </h2>
+      <p class="section-sub">Ask doubts, clarify concepts &amp; learn any Biotechnology topic — instantly, 24/7.</p>
+    </div>
+
+    <!-- Capability pills strip -->
+    <div class="ai-tutor-caps-strip gsap-reveal">
+      <span class="ai-cap-pill"><span class="ai-cap-pill-icon">🧬</span> Ask Biotech Doubts</span>
+      <span class="ai-cap-pill"><span class="ai-cap-pill-icon">💡</span> Clarify Concepts</span>
+      <span class="ai-cap-pill"><span class="ai-cap-pill-icon">📚</span> Learn Topics</span>
+      <span class="ai-cap-pill"><span class="ai-cap-pill-icon">⚡</span> Instant Answers</span>
+      <span class="ai-cap-pill"><span class="ai-cap-pill-icon">🧪</span> Exam Prep</span>
+      <span class="ai-cap-pill"><span class="ai-cap-pill-icon">🔬</span> Step-by-Step Help</span>
+    </div>
+
+    <!-- Main content area -->
+    <div class="ai-tutor-chat-area">
+
+      <!-- Large embedded chat preview frame -->
+      <div class="ai-chat-frame">
+        <!-- Browser chrome bar -->
+        <div class="ai-chat-chrome">
+          <div class="chrome-dot chrome-dot-r"></div>
+          <div class="chrome-dot chrome-dot-y"></div>
+          <div class="chrome-dot chrome-dot-g"></div>
+          <span class="chrome-label">BioNotes AI Tutor — chat.bionotes.app</span>
+          <div class="chrome-status">
+            <div class="chrome-status-dot"></div>
+            ONLINE
+          </div>
+        </div>
+
+        <!-- Demo messages -->
+        <div class="ai-chat-body" id="aiChatBody">
+          <!-- Particle canvas -->
+          <canvas class="ai-chat-particles" id="chatParticles"></canvas>
+
+          <div class="ai-msg bot">
+            <div class="ai-msg-avatar">🤖</div>
+            <div class="ai-msg-bubble">Hi there! 👋 I'm your <strong>BioNotes AI Tutor</strong>. Ask me anything about your B.Tech Biotechnology subjects — doubts, full topic explanations, or exam prep!</div>
+          </div>
+          <div class="ai-msg user">
+            <div class="ai-msg-avatar">👤</div>
+            <div class="ai-msg-bubble">Explain Gibbs free energy in BCT simply.</div>
+          </div>
+          <div class="ai-msg bot">
+            <div class="ai-msg-avatar">🤖</div>
+            <div class="ai-msg-bubble">Great question! <strong>Gibbs Free Energy (ΔG)</strong> tells us whether a reaction is spontaneous.<br><br>Formula: <strong>ΔG = ΔH − TΔS</strong><br><br>• If ΔG &lt; 0 → reaction is spontaneous ✅<br>• If ΔG &gt; 0 → non-spontaneous ❌<br>• If ΔG = 0 → system is at equilibrium ⚖️<br><br>Think of it as the "available energy" the system can use to do useful work!</div>
+          </div>
+          <div class="ai-msg user">
+            <div class="ai-msg-avatar">👤</div>
+            <div class="ai-msg-bubble">What's an example with real values?</div>
+          </div>
+          <div class="ai-msg bot">
+            <div class="ai-msg-avatar">🤖</div>
+            <div class="ai-msg-bubble">Sure! For combustion of glucose at 25°C (298 K):<br><br>ΔH = −2803 kJ/mol, ΔS = +182 J/mol·K<br>ΔG = −2803 − (298 × 0.182) = <strong>−2857 kJ/mol</strong><br><br>Very negative ΔG → highly spontaneous — that's why glucose is such a great energy source for cells! 🔋</div>
+          </div>
+        </div>
+
+        <!-- Input bar (click to open n8n real chat) -->
+        <div class="ai-chat-input-bar">
+          <div class="ai-chat-input-fake" id="aiInputFake"
+            onclick="document.querySelector('.n8n-chat .chat-toggle')?.click()">
+            Ask your Biotech question… (click to start chatting)
+          </div>
+          <button class="ai-send-btn" onclick="document.querySelector('.n8n-chat .chat-toggle')?.click()"
+            aria-label="Open AI chat">🚀</button>
+        </div>
+      </div>
+
+      <!-- Right info sidebar -->
+      <div class="ai-info-panel">
+        <div class="ai-info-card">
+          <div class="ai-info-card-icon">🧬</div>
+          <h4>Subject Coverage</h4>
+          <p>BCT, Engineering Chemistry, LACE, Data Structures — and all future semesters as they go live.</p>
+        </div>
+        <div class="ai-info-card">
+          <div class="ai-info-card-icon">💡</div>
+          <h4>How It Works</h4>
+          <p>Type any doubt or topic. The AI gives you a clear, syllabus-aligned explanation with examples.</p>
+        </div>
+        <div class="ai-info-card">
+          <div class="ai-info-card-icon">⚡</div>
+          <h4>Always Available</h4>
+          <p>Midnight exam panic or morning revision — your AI tutor never sleeps. No login required.</p>
+        </div>
+        <div class="ai-info-card">
+          <div class="ai-info-card-icon">🎯</div>
+          <h4>Exam-Focused</h4>
+          <p>Answers are tailored to KLU curriculum outcomes. Ask for CO-wise breakdowns anytime.</p>
+        </div>
+        <button class="ai-open-btn" id="aiLaunchBtn"
+          onclick="document.querySelector('.n8n-chat .chat-toggle')?.click()">
+          🚀 &nbsp;Launch Full AI Chat
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 12 — CTA BANNER
   ════════════════════════════════════════ -->
   <section class="cta-section" id="ctaSection">
     <div class="cta-inner gsap-reveal">
@@ -618,7 +1335,10 @@
         <a href="notes.html" class="btn-primary">
           <span class="btn-glow"></span>
           Browse All Notes
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
         </a>
         <a href="search.html" class="btn-ghost">🔍 Search Topics</a>
       </div>
@@ -626,7 +1346,7 @@
   </section>
 
   <!-- ════════════════════════════════════════
-       SECTION 12 — FOOTER (enhanced)
+       SECTION 13 — FOOTER
   ════════════════════════════════════════ -->
   <footer class="footer" id="siteFooter">
     <div class="footer-inner">
@@ -635,22 +1355,24 @@
           <div class="footer-logo">
             <span class="logo-icon">⬡</span> BioNotes
           </div>
-          <p class="footer-brand-desc">Next-generation B.Tech Biotechnology learning platform. Premium notes, zero cost.</p>
+          <p class="footer-brand-desc">Next-generation B.Tech Biotechnology learning platform. Premium notes, zero cost.
+          </p>
           <div class="footer-tag">● Semester 1 — Live Now</div>
         </div>
         <div class="footer-col">
           <div class="footer-col-title">Navigate</div>
-          <a href="index.html"  class="footer-link">Home</a>
-          <a href="notes.html"  class="footer-link">Notes Browser</a>
+          <a href="index.html" class="footer-link">Home</a>
+          <a href="notes.html" class="footer-link">Notes Browser</a>
           <a href="search.html" class="footer-link">Smart Search</a>
           <a href="#subjectsSection" class="footer-link">Subjects</a>
+          <a href="#aiTutorSection" class="footer-link">🤖 AI Tutor</a>
         </div>
         <div class="footer-col">
           <div class="footer-col-title">Subjects</div>
-          <a href="notes.html#BCT"  class="footer-link">🧬 BCT</a>
+          <a href="notes.html#BCT" class="footer-link">🧬 BCT</a>
           <a href="notes.html#Chem" class="footer-link">⚗️ Chem</a>
           <a href="notes.html#LACE" class="footer-link">📐 LACE</a>
-          <a href="notes.html#DS"   class="footer-link">🌐 DS</a>
+          <a href="notes.html#DS" class="footer-link">🌐 DS</a>
         </div>
         <div class="footer-col">
           <div class="footer-col-title">Coming Soon</div>
@@ -672,7 +1394,7 @@
     </div>
   </footer>
 
-  <!-- SCRIPTS (no admin.js) -->
+  <!-- SCRIPTS -->
   <script src="assets/js/notes-data.js"></script>
   <script src="assets/js/theme.js"></script>
   <script src="assets/js/three-scene.js"></script>
@@ -687,32 +1409,141 @@
       var gooeyContainer = document.getElementById('gooeyNavContainer');
       if (gooeyContainer && window.initGooeyNav) {
         var navItems = [
-          { label: 'Home',    href: 'index.html'  },
-          { label: 'Notes',   href: 'notes.html'  },
-          { label: 'Search',  href: 'search.html' },
+          { label: 'Home', href: 'index.html' },
+          { label: 'Notes', href: 'notes.html' },
+          { label: 'Search', href: 'search.html' },
+          { label: 'AI Tutor', href: '#aiTutorSection' },
         ];
-        /* Detect current page to set initial active */
         var page = window.location.pathname.split('/').pop() || 'index.html';
         var initIdx = page === 'notes.html' ? 1 : page === 'search.html' ? 2 : 0;
         window.initGooeyNav(gooeyContainer, navItems, {
-          particleCount:       15,
-          particleDistances:   [90, 10],
-          particleR:           100,
-          initialActiveIndex:  initIdx,
-          animationTime:       600,
-          timeVariance:        300,
-          colors:              [1, 2, 3, 1, 2, 3, 1, 4],
+          particleCount: 15,
+          particleDistances: [90, 10],
+          particleR: 100,
+          initialActiveIndex: initIdx,
+          animationTime: 600,
+          timeVariance: 300,
+          colors: [1, 2, 3, 1, 2, 3, 1, 4],
         });
       }
     });
   </script>
 
+  <!-- n8n Chat Widget Init -->
+  <script type="module">
+    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+    createChat({
+      webhookUrl: 'https://willtion.app.n8n.cloud/webhook/552083bc-a884-44ec-b787-d3887205aeaf/chat',
+      mode: 'window',
+      showWindowCloseButton: true,
+      chatInputKey: 'chatInput',
+      chatSessionKey: 'sessionId',
+      metadata: {},
+      initialMessages: [
+        'Hi! I\'m your BioNotes AI Tutor 🧬',
+        'Ask me anything about B.Tech Biotechnology — doubts, topic explanations, exam prep, or concept clarifications!'
+      ],
+      i18n: {
+        en: {
+          title: 'BioNotes AI Tutor 🤖',
+          subtitle: 'Ask doubts · Learn topics · Ace exams',
+          footer: '',
+          getStarted: 'Start Learning',
+          inputPlaceholder: 'Ask your Biotech question…',
+          closeButtonTooltip: 'Close chat',
+        }
+      }
+    });
+  </script>
 
+  <!-- Layer 3: Runtime DOM patch — MutationObserver forces inline styles on user messages -->
+  <script>
+    (function () {
+      /* Applies green background + black text to a user message bubble element */
+      function styleUserBubble(el) {
+        el.style.setProperty('background', 'linear-gradient(135deg,#00FFB2,#00D9FF)', 'important');
+        el.style.setProperty('background-color', '#00FFB2', 'important');
+        el.style.setProperty('color', '#000000', 'important');
+        el.style.setProperty('border', 'none', 'important');
+        el.querySelectorAll('*').forEach(function (child) {
+          child.style.setProperty('color', '#000000', 'important');
+          child.style.setProperty('-webkit-text-fill-color', '#000000', 'important');
+        });
+      }
+
+      function patchChatMessages(root) {
+        if (!root) return;
+
+        /* Strategy A: class-name based selectors */
+        var classSelectors = [
+          '.chat-message-from-user .chat-message-bubble',
+          '.chat-message.chat-message-from-user .chat-message-bubble',
+          '[class*="from-user"] [class*="bubble"]',
+          '[class*="user"] [class*="bubble"]',
+        ];
+        classSelectors.forEach(function (sel) {
+          try {
+            root.querySelectorAll(sel).forEach(function (el) { styleUserBubble(el); });
+          } catch (e) { }
+        });
+
+        /* Strategy B: layout-based detection
+           n8n renders user messages as right-aligned flex items.
+           Find every .chat-message li/div and check if it or its
+           immediate parent uses justify-content:flex-end */
+        try {
+          var allMessages = root.querySelectorAll(
+            '.chat-message, [class*="chat-message"], [class*="message-item"]'
+          );
+          allMessages.forEach(function (msg) {
+            var style = window.getComputedStyle(msg);
+            var isRight =
+              style.justifyContent === 'flex-end' ||
+              style.alignSelf === 'flex-end' ||
+              style.marginLeft === 'auto';
+
+            if (!isRight) {
+              /* Check parent */
+              var pStyle = msg.parentElement
+                ? window.getComputedStyle(msg.parentElement) : null;
+              if (pStyle && pStyle.justifyContent === 'flex-end') isRight = true;
+            }
+
+            if (isRight) {
+              /* Find bubble inside this message */
+              var bubble = msg.querySelector(
+                '[class*="bubble"], [class*="message-text"], [class*="message-content"]'
+              ) || msg;
+              styleUserBubble(bubble);
+            }
+          });
+        } catch (e) { }
+      }
+
+      /* Watch for DOM changes (new messages added) */
+      var chatObserver = new MutationObserver(function (mutations) {
+        var needsPatch = false;
+        mutations.forEach(function (mutation) {
+          if (mutation.addedNodes.length) needsPatch = true;
+        });
+        if (needsPatch) {
+          var chatRoot = document.querySelector('.n8n-chat');
+          if (chatRoot) patchChatMessages(chatRoot);
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+        chatObserver.observe(document.body, { childList: true, subtree: true });
+      });
+    })();
+  </script>
 
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => { }));
     }
   </script>
+
 </body>
+
 </html>
