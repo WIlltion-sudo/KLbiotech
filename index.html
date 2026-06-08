@@ -479,7 +479,7 @@
     /* Input bar */
     .ai-chat-input-bar {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       gap: 0.75rem;
       padding: 0.85rem 1.25rem;
       border-top: 1px solid rgba(0,255,178,0.12);
@@ -487,25 +487,33 @@
       flex-shrink: 0;
     }
 
-    .ai-chat-input-fake {
+    .ai-chat-input-real {
       flex: 1;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(0,255,178,0.15);
-      border-radius: 99px;
-      padding: 0.7rem 1.4rem;
-      font-size: 0.83rem;
-      color: rgba(255,255,255,0.3);
+      border-radius: 22px;
+      padding: 0.72rem 1.2rem;
+      font-size: 0.85rem;
+      color: #e8e8e8;
       font-family: var(--font-body);
-      cursor: pointer;
-      transition: all var(--trans-normal);
-      user-select: none;
+      cursor: text;
+      transition: all 0.25s ease;
       letter-spacing: 0.01em;
+      resize: none;
+      min-height: 44px;
+      max-height: 130px;
+      line-height: 1.5;
+      outline: none;
+      caret-color: #00FFB2;
+      scrollbar-width: none;
     }
+    .ai-chat-input-real::-webkit-scrollbar { display: none; }
+    .ai-chat-input-real::placeholder { color: rgba(255,255,255,0.3); }
 
-    .ai-chat-input-fake:hover {
-      border-color: rgba(0,255,178,0.35);
-      color: rgba(255,255,255,0.55);
+    .ai-chat-input-real:focus {
+      border-color: rgba(0,255,178,0.5);
       background: rgba(0,255,178,0.03);
+      box-shadow: 0 0 0 2px rgba(0,255,178,0.08);
     }
 
     .ai-send-btn {
@@ -519,15 +527,54 @@
       font-size: 1rem;
       flex-shrink: 0;
       cursor: pointer;
-      transition: all var(--trans-spring);
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
       box-shadow: 0 0 20px rgba(0,255,178,0.4);
       border: none;
       color: #000;
+      margin-bottom: 2px;
     }
 
-    .ai-send-btn:hover {
+    .ai-send-btn:hover:not(:disabled) {
       transform: scale(1.12);
       box-shadow: 0 0 30px rgba(0,255,178,0.6);
+    }
+    .ai-send-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Typing indicator */
+    .ai-typing-indicator {
+      display: flex;
+      gap: 0.7rem;
+      align-items: flex-end;
+      animation: fadeInUp 0.4s ease both;
+    }
+    .ai-typing-dots {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0.75rem 1.1rem;
+      background: rgba(0,20,16,0.85);
+      border: 1px solid rgba(0,255,178,0.22);
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+    }
+    .ai-typing-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00FFB2;
+      opacity: 0.6;
+      animation: typingBounce 1.2s ease-in-out infinite;
+    }
+    .ai-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .ai-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+      30% { transform: translateY(-6px); opacity: 1; }
     }
 
     /* Right info sidebar */
@@ -1251,7 +1298,7 @@
           </div>
         </div>
 
-        <!-- Demo messages -->
+        <!-- Chat messages body -->
         <div class="ai-chat-body" id="aiChatBody">
           <!-- Particle canvas -->
           <canvas class="ai-chat-particles" id="chatParticles"></canvas>
@@ -1260,32 +1307,18 @@
             <div class="ai-msg-avatar">🤖</div>
             <div class="ai-msg-bubble">Hi there! 👋 I'm your <strong>BioNotes AI Tutor</strong>. Ask me anything about your B.Tech Biotechnology subjects — doubts, full topic explanations, or exam prep!</div>
           </div>
-          <div class="ai-msg user">
-            <div class="ai-msg-avatar">👤</div>
-            <div class="ai-msg-bubble">Explain Gibbs free energy in BCT simply.</div>
-          </div>
-          <div class="ai-msg bot">
-            <div class="ai-msg-avatar">🤖</div>
-            <div class="ai-msg-bubble">Great question! <strong>Gibbs Free Energy (ΔG)</strong> tells us whether a reaction is spontaneous.<br><br>Formula: <strong>ΔG = ΔH − TΔS</strong><br><br>• If ΔG &lt; 0 → reaction is spontaneous ✅<br>• If ΔG &gt; 0 → non-spontaneous ❌<br>• If ΔG = 0 → system is at equilibrium ⚖️<br><br>Think of it as the "available energy" the system can use to do useful work!</div>
-          </div>
-          <div class="ai-msg user">
-            <div class="ai-msg-avatar">👤</div>
-            <div class="ai-msg-bubble">What's an example with real values?</div>
-          </div>
-          <div class="ai-msg bot">
-            <div class="ai-msg-avatar">🤖</div>
-            <div class="ai-msg-bubble">Sure! For combustion of glucose at 25°C (298 K):<br><br>ΔH = −2803 kJ/mol, ΔS = +182 J/mol·K<br>ΔG = −2803 − (298 × 0.182) = <strong>−2857 kJ/mol</strong><br><br>Very negative ΔG → highly spontaneous — that's why glucose is such a great energy source for cells! 🔋</div>
-          </div>
         </div>
 
-        <!-- Input bar (click to open n8n real chat) -->
+        <!-- Real functional input bar -->
         <div class="ai-chat-input-bar">
-          <div class="ai-chat-input-fake" id="aiInputFake"
-            onclick="document.querySelector('.n8n-chat .chat-toggle')?.click()">
-            Ask your Biotech question… (click to start chatting)
-          </div>
-          <button class="ai-send-btn" onclick="document.querySelector('.n8n-chat .chat-toggle')?.click()"
-            aria-label="Open AI chat">🚀</button>
+          <textarea
+            class="ai-chat-input-real"
+            id="aiChatInput"
+            placeholder="Ask your Biotech question… (press Enter or click 🚀)"
+            rows="1"
+            aria-label="Ask the AI Tutor"
+          ></textarea>
+          <button class="ai-send-btn" id="aiSendBtn" aria-label="Send message">🚀</button>
         </div>
       </div>
 
@@ -1312,8 +1345,8 @@
           <p>Answers are tailored to KLU curriculum outcomes. Ask for CO-wise breakdowns anytime.</p>
         </div>
         <button class="ai-open-btn" id="aiLaunchBtn"
-          onclick="document.querySelector('.n8n-chat .chat-toggle')?.click()">
-          🚀 &nbsp;Launch Full AI Chat
+          onclick="document.getElementById('aiChatInput')?.focus()">
+          🚀 &nbsp;Start Chatting Now
         </button>
       </div>
 
@@ -1535,6 +1568,174 @@
       document.addEventListener('DOMContentLoaded', function () {
         chatObserver.observe(document.body, { childList: true, subtree: true });
       });
+    })();
+  </script>
+
+  <!-- ═══ AI Tutor Interactive Chat ═══ -->
+  <script>
+    (function () {
+      /* ── Config ── */
+      const WEBHOOK = 'https://willtion.app.n8n.cloud/webhook/552083bc-a884-44ec-b787-d3887205aeaf/chat';
+
+      /* ── Session ID (persist per browser) ── */
+      let sessionId = sessionStorage.getItem('bionotes_ai_session');
+      if (!sessionId) {
+        sessionId = 'bsess_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+        sessionStorage.setItem('bionotes_ai_session', sessionId);
+      }
+
+      /* ── DOM refs ── */
+      const chatBody = document.getElementById('aiChatBody');
+      const chatInput = document.getElementById('aiChatInput');
+      const sendBtn = document.getElementById('aiSendBtn');
+
+      if (!chatBody || !chatInput || !sendBtn) return; // section not on page
+
+      /* ── Auto-resize textarea ── */
+      function autoResize() {
+        chatInput.style.height = 'auto';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 130) + 'px';
+      }
+      chatInput.addEventListener('input', autoResize);
+
+      /* ── Enter = send (Shift+Enter = newline) ── */
+      chatInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      sendBtn.addEventListener('click', sendMessage);
+
+      /* ── Append a message bubble ── */
+      function appendMessage(role, html) {
+        const wrap = document.createElement('div');
+        wrap.className = 'ai-msg ' + role;
+
+        const avatar = document.createElement('div');
+        avatar.className = 'ai-msg-avatar';
+        avatar.textContent = role === 'bot' ? '🤖' : '👤';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'ai-msg-bubble';
+        bubble.innerHTML = html;
+
+        wrap.appendChild(avatar);
+        wrap.appendChild(bubble);
+        chatBody.appendChild(wrap);
+        scrollToBottom();
+        return bubble;
+      }
+
+      /* ── Typing indicator ── */
+      function showTyping() {
+        const wrap = document.createElement('div');
+        wrap.className = 'ai-typing-indicator';
+        wrap.id = 'aiTypingIndicator';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'ai-msg-avatar';
+        avatar.textContent = '🤖';
+
+        const dots = document.createElement('div');
+        dots.className = 'ai-typing-dots';
+        dots.innerHTML = '<span></span><span></span><span></span>';
+
+        wrap.appendChild(avatar);
+        wrap.appendChild(dots);
+        chatBody.appendChild(wrap);
+        scrollToBottom();
+      }
+
+      function hideTyping() {
+        const indicator = document.getElementById('aiTypingIndicator');
+        if (indicator) indicator.remove();
+      }
+
+      /* ── Scroll chat to bottom ── */
+      function scrollToBottom() {
+        chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: 'smooth' });
+      }
+
+      /* ── Format plain text → basic HTML ── */
+      function formatResponse(text) {
+        // Bold: **text** or *text*
+        text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        // Newlines → <br>
+        text = text.replace(/\n/g, '<br>');
+        // Bullet points: lines starting with - or •
+        text = text.replace(/(^|<br>)([•\-])\s+/g, '$1• ');
+        return text;
+      }
+
+      /* ── Send message to n8n ── */
+      async function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text || sendBtn.disabled) return;
+
+        // Lock UI
+        sendBtn.disabled = true;
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+
+        // Show user bubble
+        appendMessage('user', escapeHTML(text));
+
+        // Show typing
+        showTyping();
+
+        try {
+          const res = await fetch(WEBHOOK, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chatInput: text,
+              sessionId: sessionId,
+              action: 'sendMessage'
+            })
+          });
+
+          hideTyping();
+
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+
+          const data = await res.json();
+
+          // n8n returns { output: "..." } or { response: "..." } depending on workflow
+          const reply =
+            (Array.isArray(data) ? data[0]?.output || data[0]?.response || data[0]?.text : null) ||
+            data.output ||
+            data.response ||
+            data.text ||
+            data.message ||
+            'Sorry, I couldn\'t get a response right now. Please try again!';
+
+          appendMessage('bot', formatResponse(reply));
+
+        } catch (err) {
+          hideTyping();
+          appendMessage('bot', '⚠️ Something went wrong reaching the AI Tutor. Please check your connection and try again.');
+          console.error('[BioNotes AI]', err);
+        } finally {
+          sendBtn.disabled = false;
+          chatInput.focus();
+        }
+      }
+
+      /* ── Escape HTML in user input ── */
+      function escapeHTML(str) {
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/\n/g, '<br>');
+      }
+
+      /* ── Scroll to bottom on load ── */
+      scrollToBottom();
+
     })();
   </script>
 
